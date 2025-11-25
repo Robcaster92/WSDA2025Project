@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Maintainers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:noNamespaceSchemaLocation="maintainer_status.xsd">
+    <Maintainer>
+        <ID>1234</ID>
+        <Nome>Luca</Nome>
+        <Cognome>Rossi</Cognome>
+    </Maintainer>
+
+    <Maintainer>
+        <ID>4321</ID>
+        <Nome>Sara</Nome>
+        <Cognome>Verdi</Cognome>
+    </Maintainer>
+
+    <Maintainer>
+        <ID>1324</ID>
+        <Nome>Giorgio</Nome>
+        <Cognome>Neri</Cognome>
+    </Maintainer>
+
+</Maintainers>

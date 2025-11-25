@@ -1,0 +1,72 @@
+body {
+  background: linear-gradient(135deg, #d7a86e, #f7e7ce);
+  font-family: "Poppins", sans-serif;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.coffee-machine {
+  background: #4e342e;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  width: 320px;
+}
+#machine-id {
+    display: block;
+    margin: 0.5rem auto;
+    padding: 0.5rem;
+    width: 80%;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    background: #ffffff;
+    color: #3e2723;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+h1 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    color: #ffcc80;
+}
+.info {
+  background: #3e2723;
+  border-radius: 10px;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.logout,a {
+    background: #d32f2f;
+    color: #fff;
+}
+.msg {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  color: #ffcc80;
+  font-weight: bold;
+}
+button {
+    display: block;
+    margin: 0.5rem auto;
+    padding: 0.5rem;
+    width: 80%;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    background: #ffcc80;
+    color: #3e2723;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+label{
+    font-size: 1rem;
+    color: #ffcc80;
+}

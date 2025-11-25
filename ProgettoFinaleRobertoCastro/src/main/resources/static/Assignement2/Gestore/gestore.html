@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestore - Sistema Distributori</title>
+    <link rel="stylesheet" href="gestore_style.css">
+</head>
+<body>
+    <div class="coffee-machine">
+        <h1>☕ Coffee CApp ☕</h1>
+        <h2>👑 Gestione 👑</h2>
+        <!-- sezione dashboard -->
+        <div id="dashboard">
+            <div class="info">
+                <h2>Benvenuto, Gestore</h2>
+                <p>Controllo completo del sistema Coffe CApp</p>
+            </div>
+            <!-- bottoni per lo switch della sezione visualizzata -->
+            <button type="button" onclick="location.href='gestione_addetti.html'">Gestisci Addetti</button>
+            <button type="button" onclick="location.href='gestione_macchine.html'">Gestisci Macchine</button>
+            <button type="button" onclick="location.href='stato_macchine.html'">Stato Macchine</button>
+            <button class="logout" id="logout-btn" type="button" onclick="location.href='login.html'">Logout</button>
+        </div>
+    </div>
+</body>
+</html>

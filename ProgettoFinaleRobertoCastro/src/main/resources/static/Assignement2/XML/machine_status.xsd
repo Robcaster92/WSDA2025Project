@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="MacchinetteCaffe">
+        <!-- Dati Macchina -->
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Distributore" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="ID" type="xs:string"/>
+                            <xs:element name="Modello" type="xs:string"/>
+                            <xs:element name="Posizione" type="xs:string"/>
+                            <xs:element name="Stato" type="xs:string"/>
+
+                            <!-- Parametri tecnici -->
+                            <xs:element name="ParametriTecnici">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="Temperatura" type="xs:decimal"/>
+                                        <xs:element name="Pressione" type="xs:decimal"/>
+                                        <xs:element name="AcquaQty" type="xs:string"/>
+                                        <xs:element name="ZuccheroQty" type="xs:string"/>
+                                        <xs:element name="BicchieriNum" type="xs:nonNegativeInteger"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+
+                            <!-- Bevande disponibili -->
+                            <xs:element name="BevandeDisponibili">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="Bevanda" maxOccurs="20">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="Nome" type="xs:string"/>
+                                                    <xs:element name="Prezzo" type="xs:decimal"/>
+                                                    <xs:element name="Quantity" type="xs:decimal">
+                                                        <xs:simpleType>
+                                                            <xs:restriction base="xs:decimal">
+                                                                <xs:minInclusive value="0"/>
+                                                                <xs:maxInclusive value="1000"/>
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                    <xs:element name="MaxQuantity" type="xs:decimal">
+                                                        <xs:simpleType>
+                                                            <xs:restriction base="xs:decimal">
+                                                                <xs:minInclusive value="0"/>
+                                                                <xs:maxInclusive value="1000"/>
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+
+                            <!-- Manutenzione -->
+                            <xs:element name="Errors" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="Message" type="xs:string" minOccurs="0" maxOccurs="10"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="UltimaManutenzione" type="xs:date"/>
+                            <xs:element name="AddettoResponsabile" type="xs:string"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

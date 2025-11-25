@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Area Cliente</title>
+    <link rel="stylesheet" href="utente_style.css" />
+    <script src="utente.js" defer></script>
+</head>
+<body>
+  <!-- Schermata utente loggato -->
+    <div class="coffee-machine" id="user-panel">
+        <h1>☕ Coffee CApp ☕</h1>
+        <h2>Area Cliente</h2>
+        <div class="info">
+            <p><strong>Utente: </strong><span id="nome"></span></p>
+            <p><strong>Credito: </strong><span id="credito"></span><span>€</span></p>
+        </div>
+
+
+        <div>
+            <label for="machine-id">Connetti al distributore (ID):</label>
+            <input type="text" id="machine-id" placeholder="Es. 12345" required>
+            <button type="submit" id="connect-btn">Connetti</button>
+            <button class="logout" id="disconnect-btn" style="display: none;">Disconnetti</button>
+        </div>
+
+        <div>
+            <button id="recharge-btn">Ricarica Credito</button>
+            <button class="logout" id="logout-btn" type="button" onclick="location.href='login.html'">Logout</button>
+        </div>
+
+
+        <div class="msg" id="status-msg"></div>
+    </div>
+</body>
+</html>

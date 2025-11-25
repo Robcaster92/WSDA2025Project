@@ -1,0 +1,124 @@
+body {
+  background: linear-gradient(135deg, #d7a86e, #f7e7ce);
+  font-family: "Poppins", sans-serif;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.coffee-machine {
+  background: #4e342e;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  width: 340px;
+}
+
+h1 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: #ffcc80;
+}
+
+h2, h3 {
+  color: white;
+  text-align: center;
+}
+
+.info {
+  background: #3e2723;
+  border-radius: 10px;
+  padding: 0.8rem;
+  margin: 1rem 0;
+  text-align: left;
+}
+
+input {
+  display: block;
+  margin: 0.5rem auto;
+  padding: 0.5rem;
+  width: 80%;
+  border: none;
+  border-radius: 8px;
+  background: #6d4c41;
+  color: #fff;
+  font-size: 1rem;
+}
+
+input::placeholder {
+  color: #d7ccc8;
+}
+
+button {
+  display: block;
+  margin: 0.5rem auto;
+  padding: 0.5rem;
+  width: 80%;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  background: #ffcc80;
+  color: #3e2723;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.logout, a {
+  background: #d32f2f;
+  color: #fff;
+}
+
+
+.status.on {
+  color: #8bc34a;
+}
+
+.status.off {
+  color: #e57373;
+}
+
+.hidden {
+  display: none;
+}
+
+.section {
+  margin-top: 1rem;
+}
+
+.my-table {
+    border-collapse: collapse;
+    width: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.my-table th,
+.my-table td {
+    border: 1px solid #000;
+    padding: 6px 10px;
+    text-align: center;
+}
+
+.my-table th {
+    background-color: #ffcc80;
+    color: black;
+}
+
+#rimuovi{
+    color:red;
+}
+#ricercaText{
+    display: inline-flex;
+    color: white;
+    width: 60%;
+    text-align: left;
+    margin-right: 10px;
+}
+#ricercainline{
+    display: inline-flex;
+    width: 20%;
+    text-align: right;
+}

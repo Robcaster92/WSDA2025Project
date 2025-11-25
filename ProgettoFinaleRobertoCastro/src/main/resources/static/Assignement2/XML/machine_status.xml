@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MacchinetteCaffe xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:noNamespaceSchemaLocation="machine_status.xsd">
+    <Distributore>
+        <ID>1012</ID>
+        <Modello>Coffe CApp Express</Modello>
+        <Posizione>Ingegneria - Edificio 8 - Piano 2</Posizione>
+        <Stato>Online</Stato>
+        <ParametriTecnici>
+            <Temperatura>120</Temperatura>
+            <Pressione>9</Pressione>
+            <AcquaQty>3</AcquaQty>
+            <ZuccheroQty>150</ZuccheroQty>
+            <BicchieriNum>57</BicchieriNum>
+        </ParametriTecnici>
+        <BevandeDisponibili>
+            <Bevanda>
+                <Nome>Caffe</Nome>
+                <Prezzo>1.00</Prezzo>
+                <Quantity>550</Quantity>
+                <MaxQuantity>1000</MaxQuantity>
+            </Bevanda>
+            <Bevanda>
+                <Nome>Cappuccino</Nome>
+                <Prezzo>1.20</Prezzo>
+                <Quantity>350</Quantity>
+                <MaxQuantity>500</MaxQuantity>
+            </Bevanda>
+            <Bevanda>
+                <Nome>Caffelatte</Nome>
+                <Prezzo>1.50</Prezzo>
+                <Quantity>410</Quantity>
+                <MaxQuantity>500</MaxQuantity>
+            </Bevanda>
+            <Bevanda>
+                <Nome>Cioccolata</Nome>
+                <Prezzo>1.00</Prezzo>
+                <Quantity>130</Quantity>
+                <MaxQuantity>1000</MaxQuantity>
+            </Bevanda>
+            <Bevanda>
+                <Nome>Thè</Nome>
+                <Prezzo>0.80</Prezzo>
+                <Quantity>240</Quantity>
+                <MaxQuantity>500</MaxQuantity>
+            </Bevanda>
+        </BevandeDisponibili>
+        <Errors>
+            <Message>Basso Livello di Cioccolata!</Message>
+            <Message>Temperatura troppo alta!</Message>
+        </Errors>
+        <UltimaManutenzione>2025-11-06</UltimaManutenzione>
+        <AddettoResponsabile>Luca Rossi</AddettoResponsabile>
+    </Distributore>
+
+    <Distributore>
+        <ID>1242</ID>
+        <Modello>Coffe CApp Unlimited</Modello>
+        <Posizione>Ingegneria - Edificio 6 - Piano 3</Posizione>
+        <Stato>Offline</Stato>
+        <ParametriTecnici>
+            <Temperatura>98</Temperatura>
+            <Pressione>9</Pressione>
+            <AcquaQty>2</AcquaQty>
+            <ZuccheroQty>135</ZuccheroQty>
+            <BicchieriNum>57</BicchieriNum>
+        </ParametriTecnici>
+        <BevandeDisponibili>
+            <Bevanda>
+                <Nome>Caffe</Nome>
+                <Prezzo>1.00</Prezzo>
+                <Quantity>900</Quantity>
+                <MaxQuantity>1000</MaxQuantity>
+            </Bevanda>
+            <Bevanda>
+                <Nome>Cappuccino</Nome>
+                <Prezzo>1.20</Prezzo>
+                <Quantity>280</Quantity>
+                <MaxQuantity>500</MaxQuantity>
+            </Bevanda>
+            <Bevanda>
+                <Nome>Caffelatte</Nome>
+                <Prezzo>1.50</Prezzo>
+                <Quantity>300</Quantity>
+                <MaxQuantity>500</MaxQuantity>
+            </Bevanda>
+            <Bevanda>
+                <Nome>Cioccolata</Nome>
+                <Prezzo>1.00</Prezzo>
+                <Quantity>750</Quantity>
+                <MaxQuantity>1000</MaxQuantity>
+            </Bevanda>
+            <Bevanda>
+                <Nome>The</Nome>
+                <Prezzo>0.80</Prezzo>
+                <Quantity>50</Quantity>
+                <MaxQuantity>500</MaxQuantity>
+            </Bevanda>
+        </BevandeDisponibili>
+        <Errors>
+            <Message>Basso Livello di Thè!</Message>
+            <Message>Manutenzione ordinaria richiesta!</Message>
+        </Errors>
+        <UltimaManutenzione>2024-10-26</UltimaManutenzione>
+        <AddettoResponsabile>Sara Verdi</AddettoResponsabile>
+    </Distributore>
+
+
+    <Distributore>
+        <ID>1212</ID>
+        <Modello>Coffe CApp Unlimited</Modello>
+        <Posizione>Ingegneria - Edificio 6 - Piano 2</Posizione>
+        <Stato>Online</Stato>
+        <ParametriTecnici>
+            <Temperatura>98</Temperatura>
+            <Pressione>9</Pressione>
+            <AcquaQty>3</AcquaQty>
+            <ZuccheroQty>250</ZuccheroQty>
+            <BicchieriNum>95</BicchieriNum>
+        </ParametriTecnici>
+        <BevandeDisponibili>
+            <Bevanda>
+                <Nome>Caffe</Nome>
+                <Prezzo>1.00</Prezzo>
+                <Quantity>1000</Quantity>
+                <MaxQuantity>1000</MaxQuantity>
+            </Bevanda>
+            <Bevanda>
+                <Nome>Cappuccino</Nome>
+                <Prezzo>1.20</Prezzo>
+                <Quantity>500</Quantity>
+                <MaxQuantity>500</MaxQuantity>
+            </Bevanda>
+            <Bevanda>
+                <Nome>Caffelatte</Nome>
+                <Prezzo>1.50</Prezzo>
+                <Quantity>500</Quantity>
+                <MaxQuantity>500</MaxQuantity>
+            </Bevanda>
+            <Bevanda>
+                <Nome>Cioccolata</Nome>
+                <Prezzo>1.00</Prezzo>
+                <Quantity>1000</Quantity>
+                <MaxQuantity>1000</MaxQuantity>
+            </Bevanda>
+            <Bevanda>
+                <Nome>The</Nome>
+                <Prezzo>0.80</Prezzo>
+                <Quantity>500</Quantity>
+                <MaxQuantity>500</MaxQuantity>
+            </Bevanda>
+        </BevandeDisponibili>
+        <Errors>
+        </Errors>
+        <UltimaManutenzione>2025-10-26</UltimaManutenzione>
+        <AddettoResponsabile>Sara Verdi</AddettoResponsabile>
+    </Distributore>
+
+
+    <Distributore>
+        <ID>1999</ID>
+        <Modello>Coffe CApp Express</Modello>
+        <Posizione>Lettere - Edificio 12 - Piano 1</Posizione>
+        <Stato>Online</Stato>
+        <ParametriTecnici>
+            <Temperatura>96</Temperatura>
+            <Pressione>9</Pressione>
+            <AcquaQty>5</AcquaQty>
+            <ZuccheroQty>120</ZuccheroQty>
+            <BicchieriNum>27</BicchieriNum>
+        </ParametriTecnici>
+        <BevandeDisponibili>
+            <Bevanda>
+                <Nome>Caffe</Nome>
+                <Prezzo>1.00</Prezzo>
+                <Quantity>200</Quantity>
+                <MaxQuantity>1000</MaxQuantity>
+            </Bevanda>
+            <Bevanda>
+                <Nome>Cappuccino</Nome>
+                <Prezzo>1.20</Prezzo>
+                <Quantity>450</Quantity>
+                <MaxQuantity>500</MaxQuantity>
+            </Bevanda>
+            <Bevanda>
+                <Nome>Caffelatte</Nome>
+                <Prezzo>1.50</Prezzo>
+                <Quantity>300</Quantity>
+                <MaxQuantity>500</MaxQuantity>
+            </Bevanda>
+            <Bevanda>
+                <Nome>Cioccolata</Nome>
+                <Prezzo>1.00</Prezzo>
+                <Quantity>900</Quantity>
+                <MaxQuantity>1000</MaxQuantity>
+            </Bevanda>
+            <Bevanda>
+                <Nome>Thè</Nome>
+                <Prezzo>0.80</Prezzo>
+                <Quantity>410</Quantity>
+                <MaxQuantity>500</MaxQuantity>
+            </Bevanda>
+        </BevandeDisponibili>
+        <Errors>
+            <Message>Basso Livello di Caffè!</Message>
+        </Errors>
+        <UltimaManutenzione>2025-11-07</UltimaManutenzione>
+        <AddettoResponsabile>Luca Rossi</AddettoResponsabile>
+    </Distributore>
+</MacchinetteCaffe>

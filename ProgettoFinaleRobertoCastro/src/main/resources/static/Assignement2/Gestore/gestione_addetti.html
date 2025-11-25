@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestione Addetti</title>
+    <link rel="stylesheet" href="gestore_style.css">
+    <script src="gestione_addetti.js" defer></script>
+</head>
+<body id="gestisci_addetto">
+    <div class="coffee-machine">
+        <h1>☕ Coffee CApp ☕</h1>
+        <p>Gestione Addetti</p>
+        <table class="my-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Cognome</th>
+                <th id="rimuove">Rimuovi</th>
+            </tr>
+            </thead>
+            <tbody id="body"></tbody>
+        </table>
+        <button id="apri_aggiungi_tab">Aggiungi</button>
+        <form id="tab_aggiungi" method="get"  style="display: none">
+            <input type="text"
+                   id="id-addetto"
+                   name="id"
+                   placeholder="Es: 1234"
+                   required
+                   minlength="4"
+                   maxlength="4"
+            >
+            <input
+                    type="text"
+                    id="nome-addetto"
+                    name="name"
+                    placeholder="Nome Addetto"
+                    required
+                    minlength="2"
+                    maxlength="20"
+            >
+            <input
+                    type="text"
+                    id="cognome-addetto"
+                    name="surname"
+                    placeholder="Cognome Addetto"
+                    required
+                    minlength="2"
+                    maxlength="20"
+            >
+            <button type="button" id="aggiungi">Aggiungi Addetto</button>
+            <button type="button" id="annulla">Annulla</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,118 @@
+body {
+  background: linear-gradient(135deg, #d7a86e, #f7e7ce);
+  font-family: "Poppins", sans-serif;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.coffee-machine {
+  background: #4e342e;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  width: 320px;
+}
+
+h1 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: #ffcc80;
+}
+
+.info {
+  background: #6d4c41;
+  border-radius: 10px;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+label,
+select,
+button {
+  display: block;
+  margin: 0.5rem auto;
+  width: 80%;
+}
+
+select,
+button {
+  padding: 0.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+select {
+  background: #6d4c41;
+  color: #fff;
+}
+
+button {
+  background: #ffcc80;
+  color: #553631;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: rgb(224, 167, 74);
+}
+
+.progress-container {
+  width: 80%;
+  height: 15px;
+  background-color: #6d4c41;
+  border-radius: 10px;
+  margin: 1rem auto;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background-color: #ffcc80;
+  border-radius: 10px;
+  transition: width 0.1s linear;
+}
+
+.msg {
+  margin-top: 1%;
+  font-size: 1.3rem;
+  color: #ffcc80;
+  font-weight: bold;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider{
+  appearance: none;
+  -webkit-appearance: none;
+  width: 200px;
+  height: 10px;
+  border-radius: 5px;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 10px;
+  border-radius: 5px;
+  
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #FFD700;
+  border: 2px solid #000;
+  cursor: pointer;
+  margin-top: -6px;
+  position: relative;
+  z-index: 2;
+}

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Stato Macchine</title>
+    <link rel="stylesheet" href="gestore_style.css">
+    <script src="stato_macchine.js" defer></script>
+</head>
+<body>
+<div class="coffee-machine" id="coffemachine" style="width: 500px;">
+    <h1>☕ Coffee CApp ☕</h1>
+    <h2>👑 Stato Macchine 👑</h2>
+    <input type="text" id="ricercaText" placeholder="Ricerca..."><span><button id="ricercainline">Ricerca</button></span>
+    <table class="my-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Modello</th>
+            <th>Posizione</th>
+            <th>Stato</th>
+            <th id="attivadisattiva">Comandi</th>
+        </tr>
+        </thead>
+        <tbody id="body"></tbody>
+    </table>
+</div>
+</body>
+</html>
