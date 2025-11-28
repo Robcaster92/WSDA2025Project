@@ -77,9 +77,7 @@ function refreshList() {
             alert("Impossibile eseguire una ricerca vuota!");
             return;
         }
-        console.log(ricercaTxt);
         let output = cerca(arrayMacchine, ricercaTxt);
-        console.log(output);
         searchRefresh(output);
     })
     function cerca(lista, valore) {
@@ -113,15 +111,15 @@ function refreshList() {
             if(output[j].stato == "Online") {
                 tr.innerHTML = `
             <td>${output[j].id}</td>
-            <td>${arrayMacchine[j].modello}</td>
-            <td>${arrayMacchine[j].posizione}</td>
+            <td>${output[j].modello}</td>
+            <td>${output[j].posizione}</td>
             <td>${output[j].stato} 🟢</td>
             `;
             }else{
                 tr.innerHTML = `
             <td>${output[j].id}</td>
-            <td>${arrayMacchine[j].modello}</td>
-            <td>${arrayMacchine[j].posizione}</td>
+            <td>${output[j].modello}</td>
+            <td>${output[j].posizione}</td>
             <td>${output[j].stato} 🔴</td>
             `;
             }

@@ -70,7 +70,8 @@ aggiungi.addEventListener('click', () => {
         }
     }
     if(trovato){
-        alert("ID gia presente nel sistema!")
+        alert("ID gia presente nel sistema!");
+        trovato = false;
     }else{
         arrayMacchine.push(new Macchina(ID_macchina, modello_macchina, stato_macchina));
         console.log(arrayMacchine.length);

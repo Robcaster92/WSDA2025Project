@@ -93,6 +93,9 @@ button {
     border-collapse: collapse;
     width: 100%;
     font-family: Arial, sans-serif;
+
+    /* IMPORTANTE: Questo obbliga la tabella a stare nei 276px disponibili */
+    table-layout: fixed;
 }
 
 .my-table th,
@@ -100,6 +103,11 @@ button {
     border: 1px solid #000;
     padding: 6px 10px;
     text-align: center;
+
+    /* IMPORTANTE: Queste righe gestiscono il testo lungo */
+    word-wrap: break-word;       /* Per compatibilità */
+    overflow-wrap: break-word;   /* Standard moderno */
+    word-break: break-all;       /* Spezza brutalmente la stringa se non ci sono spazi */
 }
 
 .my-table th {

@@ -57,7 +57,6 @@ function refreshList() {
         let tdBtn = document.createElement("td");
         tdBtn.appendChild(btn);
         tr.appendChild(tdBtn);
-
         tbody.appendChild(tr);
     }
 }
@@ -78,6 +77,7 @@ aggiungi.addEventListener('click', () => {
     }
     if(trovato){
         alert("ID gia presente nel sistema!")
+        trovato = false;
     }else{
         arrayAddetti.push(new Addetto(ID_addetto,name_addetto,surname_addetto));
         console.log(arrayAddetti.length);

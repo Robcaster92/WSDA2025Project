@@ -23,7 +23,7 @@
         </table>
         <button id="apri_aggiungi_tab">Aggiungi</button>
         <form id="tab_aggiungi" method="get"  style="display: none">
-            <input type="text"
+            <input type="number"
                    id="id-addetto"
                    name="id"
                    placeholder="Es: 1234"
@@ -39,6 +39,7 @@
                     required
                     minlength="2"
                     maxlength="20"
+                    pattern="[A-Za-z]+"
             >
             <input
                     type="text"
@@ -48,6 +49,7 @@
                     required
                     minlength="2"
                     maxlength="20"
+                    pattern="[A-Za-z]+"
             >
             <button type="button" id="aggiungi">Aggiungi Addetto</button>
             <button type="button" id="annulla">Annulla</button>
