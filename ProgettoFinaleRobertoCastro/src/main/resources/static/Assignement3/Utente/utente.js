@@ -4,33 +4,32 @@ const rechargeBtn = document.getElementById("recharge-btn");
 const statusMsg = document.getElementById("status-msg");
 const machineInput = document.getElementById("machine-id");
 
-// 1. URL per leggere i dati (Il file JSON generato dalla tua Repository)
-// Il timestamp '?v=...' serve per evitare che il browser usi la vecchia versione in cache
 const DATA_URL = "../XML/dati.json?v=" + new Date().getTime();
 
-// 2. URL per scrivere i dati (Il tuo Backend Java/Spring che riceve la richiesta)
-// ⚠️ IMPORTANTE: Modifica questo URL con quello del tuo Controller Java
-const RECHARGE_API_URL = "http://localhost:8080/api/ricarica";
+const RECHARGE_API_URL = "http://localhost:8081/api/ricarica";
 
 let currentMachineId = null;
 
-// --- FUNZIONE PER CARICARE I DATI ---
-function caricaDati() {
-    // Aggiungo timestamp fresco per forzare la rilettura del file appena aggiornato
-    const urlFresco = "../XML/dati.json?v=" + new Date().getTime();
+const USER_INFO_URL = "http://localhost:8081/api/utente/info?username=Rob92";
+const RECHARGE_API_URL = "http://localhost:8081/api/ricarica";
 
-    fetch(urlFresco)
+// ... (il resto delle variabili connectBtn, etc rimane uguale) ...
+
+// MODIFICA 2: Funzione aggiornata per leggere dal Database
+function caricaDati() {
+    fetch(USER_INFO_URL)
         .then(response => {
-            if (!response.ok) throw new Error("File JSON non trovato");
+            if (!response.ok) throw new Error("Errore comunicazione server");
             return response.json();
         })
         .then(data => {
+            // Ora data contiene { "user_name": "...", "credito": ... } che arrivano dal DB
             document.getElementById('nome').textContent = data.user_name;
             document.getElementById('credito').textContent = parseFloat(data.credito).toFixed(2);
         })
         .catch(error => {
-            console.error("Errore lettura dati:", error);
-            // Se fallisce, non mostrare errore rosso all'inizio, magari è il primo avvio
+            console.error("Errore:", error);
+            statusMsg.textContent = "⚠️ Errore caricamento dati dal Server.";
         });
 }
 
