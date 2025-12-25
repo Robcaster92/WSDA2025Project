@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Area Manutentore</title>
+    <link rel="stylesheet" href="manutentore_style.css">
+    <script src="manutentore.js" defer></script>
+</head>
+<body>
+<div class="coffee-machine">
+    <h1>☕ Coffee CApp ☕</h1>
+
+    <h3 id="welcome-msg" style="color: #ffcc80; margin-bottom: 20px;">Ciao, Manutentore</h3>
+
+    <div class="info" id="connection-panel">
+        <label for="machine-id">ID Distributore:</label>
+        <input type="text" id="machine-id" placeholder="Es. 1012">
+        <button id="connect-btn">Connetti</button>
+    </div>
+
+    <div id="machine-status" class="hidden">
+
+        <button id="disconnect-btn" class="disconnect-machine">🔄 Disconnetti da Macchina</button>
+
+        <div class="info">
+            <h3>Dati Generali</h3>
+            <p><strong>ID:</strong> <span id="machine-id-label">-</span></p>
+            <p><strong>Modello:</strong> <span id="machine-type-label">-</span></p>
+            <p><strong>Posizione:</strong> <span id="machine-site-label">-</span></p>
+            <p><strong>Stato:</strong> <span id="machine-state-label">-</span></p>
+            <p><strong>Manutentore:</strong> <span id="machine-manutentore-label">-</span></p>
+            <p><strong>Ultima Manutenzione:</strong> <span id="machine-manut-label">-</span></p>
+        </div>
+
+        <div class="specs">
+            <h3>Parametri Tecnici</h3>
+            <p>🌡️ Temperatura: <span id="machine-temp-label">-</span></p>
+            <p>🌪️ Pressione: <span id="machine-bar-label">-</span></p>
+            <p>💧 Acqua: <span id="machine-water-label">-</span></p>
+            <p>🍬 Zucchero: <span id="machine-sugar-label">-</span></p>
+            <p>🥛 Bicchieri: <span id="machine-glass-label">-</span></p>
+        </div>
+
+        <div class="levels">
+            <h3>Livelli Scorte</h3>
+
+            <div class="level-item">
+                <label>Caffè</label>
+                <div class="progress-container small">
+                    <div class="progress-bar" id="caffepblvl"></div>
+                </div>
+                <span class="level-percent" id="caffe-level-percent">0%</span>
+            </div>
+
+            <div class="level-item">
+                <label>Cappuccino</label>
+                <div class="progress-container small">
+                    <div class="progress-bar" id="cappuccinopblvl"></div>
+                </div>
+                <span class="level-percent" id="cappuccino-level-percent">0%</span>
+            </div>
+
+            <div class="level-item">
+                <label>Caffellatte</label>
+                <div class="progress-container small">
+                    <div class="progress-bar" id="caffelattepblvl"></div>
+                </div>
+                <span class="level-percent" id="caffelatte-level-percent">0%</span>
+            </div>
+
+            <div class="level-item">
+                <label>Cioccolata</label>
+                <div class="progress-container small">
+                    <div class="progress-bar" id="cioccolatapblvl"></div>
+                </div>
+                <span class="level-percent" id="cioccolata-level-percent">0%</span>
+            </div>
+
+            <div class="level-item">
+                <label>Tè</label>
+                <div class="progress-container small">
+                    <div class="progress-bar" id="thepblvl"></div>
+                </div>
+                <span class="level-percent" id="the-level-percent">0%</span>
+            </div>
+        </div>
+
+        <div class="faults">
+            <h3>Segnalazioni Guasti</h3>
+            <ul id="error-list"></ul>
+        </div>
+    </div>
+
+    <button class="logout" id="global-logout-btn" style="margin-top: 20px;">Esci dall'Account</button>
+</div>
+</body>
+</html>

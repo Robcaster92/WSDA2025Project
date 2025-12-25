@@ -153,3 +153,12 @@ a{
 .hidden {
     display: none;
 }
+
+.disconnect-machine {
+    background-color: #ff9800; /* Arancione */
+    color: white;
+    margin-bottom: 15px;
+}
+.disconnect-machine:hover {
+    background-color: #e68900;
+}
