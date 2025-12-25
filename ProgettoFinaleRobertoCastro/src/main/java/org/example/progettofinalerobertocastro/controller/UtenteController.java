@@ -16,18 +16,19 @@ public class UtenteController {
 
     @Autowired
     private UtenteRepository utenteRepository;
-
-    // API per ottenere i dati dell'utente (Sostituisce la lettura di dati.json)
-    // Chiama: GET http://localhost:8081/api/utente/info?username=Rob92
+    
     @GetMapping("/utente/info")
     public ResponseEntity<?> getUtenteInfo(@RequestParam String username) {
         Optional<Utente> utente = utenteRepository.findByUsername(username);
         if (utente.isPresent()) {
-            // Restituisce un JSON con nome e credito aggiornati dal DB
-            return ResponseEntity.ok(Map.of(
-                    "user_name", utente.get().getNome(),
-                    "credito", utente.get().getCredito()
-            ));
+            Utente u = utente.get();
+
+            // USA HASHMAP AL POSTO DI MAP.OF PER EVITARE CRASH SU NULL
+            java.util.Map<String, Object> risposta = new java.util.HashMap<>();
+            risposta.put("user_name", u.getNome() != null ? u.getNome() : "Utente"); // Default se null
+            risposta.put("credito", u.getCredito() != null ? u.getCredito() : 0.0);
+
+            return ResponseEntity.ok(risposta);
         }
         return ResponseEntity.notFound().build();
     }

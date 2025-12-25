@@ -1,126 +1,82 @@
-const connectBtn = document.getElementById("connect-btn");
-const disconnectBtn = document.getElementById("disconnect-btn");
-const rechargeBtn = document.getElementById("recharge-btn");
-const statusMsg = document.getElementById("status-msg");
-const machineInput = document.getElementById("machine-id");
-
-const DATA_URL = "../XML/dati.json?v=" + new Date().getTime();
-
-const RECHARGE_API_URL = "http://localhost:8081/api/ricarica";
-
-let currentMachineId = null;
-
-// Recupera lo username salvato durante il login
+// --- 1. CONTROLLO LOGIN ---
+// Recupera lo username salvato nella memoria del browser durante il login
 const loggedUser = localStorage.getItem("username_loggato");
 
-// Se non c'è nessuno loggato, rimanda al login
+// Se non c'è nessuno loggato, rimanda alla pagina di login
 if (!loggedUser) {
-    alert("Devi effettuare il login!");
-    window.location.href = "login.html";
+    alert("Accesso negato! Effettua prima il login.");
+    window.location.href = "../login.html"; // Assicurati che il percorso sia giusto
 }
 
+// Riferimenti agli elementi HTML della pagina
+const welcomeLabel = document.getElementById("nome"); // O l'ID dove mostri il nome
+const creditLabel = document.getElementById("credito"); // L'ID dove mostri il credito
+const connectBtn = document.getElementById("connect-btn");
+const machineInput = document.getElementById("machine-id");
 
-const USER_INFO_URL = "http://localhost:8081/api/utente/info?username=" + loggedUser;
-const RECHARGE_API_URL = "http://localhost:8081/api/ricarica";
+// URL del Backend
+const API_INFO = "http://localhost:8081/api/utente/info?username=" + loggedUser;
+const API_RICARICA = "http://localhost:8081/api/ricarica";
 
-let currentMachineId = null;
-
-
-
-// ... (il resto delle variabili connectBtn, etc rimane uguale) ...
-
-// MODIFICA 2: Funzione aggiornata per leggere dal Database
-function caricaDati() {
-    fetch(USER_INFO_URL)
+// --- 2. CARICAMENTO DATI UTENTE ---
+function caricaDatiUtente() {
+    fetch(API_INFO)
         .then(response => {
-            if (!response.ok) throw new Error("Errore comunicazione server");
+            if (!response.ok) throw new Error("Utente non trovato");
             return response.json();
         })
         .then(data => {
-            // Ora data contiene { "user_name": "...", "credito": ... } che arrivano dal DB
-            document.getElementById('nome').textContent = data.user_name;
-            document.getElementById('credito').textContent = parseFloat(data.credito).toFixed(2);
+            console.log("Dati utente:", data);
+
+            // Aggiorna la pagina con i dati veri dal Database
+            if(welcomeLabel) welcomeLabel.textContent = "Ciao, " + data.user_name;
+            if(creditLabel) creditLabel.textContent = data.credito.toFixed(2) + " €";
         })
-        .catch(error => {
-            console.error("Errore:", error);
-            statusMsg.textContent = "⚠️ Errore caricamento dati dal Server.";
+        .catch(err => {
+            console.error(err);
+            alert("Errore nel caricamento dati utente. Riprova il login.");
+            localStorage.removeItem("username_loggato");
+            window.location.href = "../login.html";
         });
 }
 
-// Carica i dati appena si apre la pagina
-caricaDati();
-
-// --- GESTIONE CONNESSIONE ---
-connectBtn.addEventListener('click', () => {
-    let id = machineInput.value.trim();
-    if(id){
-        currentMachineId = id;
-        statusMsg.textContent = "✅ Connesso al distributore " + currentMachineId;
-        statusMsg.style.color = "#ffcc80";
-        machineInput.disabled = true;
-        connectBtn.style.display = "none";
-        disconnectBtn.style.display = "block";
-    } else {
-        alert("Inserisci l'id della macchina");
-    }
-});
-
-// --- GESTIONE DISCONNESSIONE ---
-disconnectBtn.addEventListener('click', () => {
-    localStorage.removeItem("username_loggato"); // Pulisce la memoria
-    window.location.href = 'login.html';
-    statusMsg.textContent = "❌ Disconnesso dal distributore " + currentMachineId;
-    currentMachineId = null;
-    machineInput.value = "";
-    machineInput.disabled = false;
-    connectBtn.style.display = "block";
-    disconnectBtn.style.display = "none";
-});
-
-// --- GESTIONE RICARICA (L'unica parte che parla col Server) ---
-rechargeBtn.addEventListener('click', () => {
-    let importo = prompt("Inserire l'importo da ricaricare (es. 5.00): ");
-
-    if (importo !== null && importo > 0 && !isNaN(parseFloat(importo)) && importo.trim() !== "") {
-        if (confirm("Confermare per ricaricare l'importo di " + importo + "€?")){
-
-            statusMsg.textContent = "🔄 Elaborazione ricarica in corso...";
-
-            // INVIO RICHIESTA AL SERVER (JAVA)
-            fetch(RECHARGE_API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                // Inviamo l'importo al server
-                body: JSON.stringify({ importo: parseFloat(importo) })
+// --- 3. FUNZIONE RICARICA ---
+// Assicurati che il tuo bottone "Ricarica" nell'HTML chiami questa funzione o abbia un listener
+function ricaricaCredito() {
+    let importo = prompt("Quanto vuoi ricaricare? (es. 5.50)");
+    if (importo && !isNaN(importo)) {
+        fetch(API_RICARICA, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                username: loggedUser,
+                importo: parseFloat(importo)
             })
-                .then(response => {
-                    if (response.ok) {
-                        // SE IL SERVER DICE OK:
-                        statusMsg.textContent = "💰 Ricarica effettuata! Aggiorno saldo...";
-
-                        // Aspettiamo un secondo per dare tempo al server di scrivere il file JSON
-                        setTimeout(() => {
-                            caricaDati(); // Ricarichiamo il file JSON aggiornato
-                        }, 500);
-
-                    } else {
-                        // SE IL SERVER DICE NO (es. Errore DB):
-                        statusMsg.textContent = "⚠️ Errore del server durante la ricarica.";
-                        statusMsg.style.color = "red";
-                    }
-                })
-                .catch(error => {
-                    console.error("Errore di rete:", error);
-                    statusMsg.textContent = "⚠️ Impossibile contattare il server.";
-                    statusMsg.style.color = "red";
-                });
-
-        } else {
-            statusMsg.textContent = "Operazione annullata.";
-        }
-    } else {
-        alert("Inserire un importo numerico valido.");
+        })
+            .then(res => res.json())
+            .then(data => {
+                alert("Ricarica effettuata! Nuovo credito: " + data.nuovo_credito + " €");
+                caricaDatiUtente(); // Aggiorna subito la scritta a video
+            })
+            .catch(err => alert("Errore ricarica: " + err));
     }
-});
+}
+
+// Collegamento bottone ricarica (se ha id="recharge-btn")
+const btnRicarica = document.getElementById("recharge-btn");
+if(btnRicarica) {
+    btnRicarica.addEventListener("click", ricaricaCredito);
+}
+
+// --- 4. FUNZIONE LOGOUT ---
+const btnLogout = document.getElementById("logout-btn");
+if(btnLogout) {
+    btnLogout.addEventListener("click", () => {
+        localStorage.removeItem("username_loggato");
+        localStorage.removeItem("ruolo_utente");
+        window.location.href = "../login.html";
+    });
+}
+
+// Avvio automatico al caricamento della pagina
+caricaDatiUtente();
