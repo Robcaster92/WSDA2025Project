@@ -2,58 +2,60 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestione Addetti</title>
     <link rel="stylesheet" href="gestore_style.css">
     <script src="gestione_addetti.js" defer></script>
 </head>
-<body id="gestisci_addetto">
-    <div class="coffee-machine">
-        <h1>☕ Coffee CApp ☕</h1>
-        <p>Gestione Addetti</p>
-        <table class="my-table">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Cognome</th>
-                <th id="rimuove">Rimuovi</th>
-            </tr>
-            </thead>
-            <tbody id="body"></tbody>
-        </table>
-        <button id="apri_aggiungi_tab">Aggiungi</button>
-        <form id="tab_aggiungi" method="get"  style="display: none">
-            <input type="number"
-                   id="id-addetto"
-                   name="id"
-                   placeholder="Es: 1234"
-                   required
-                   minlength="4"
-                   maxlength="4"
-            >
-            <input
-                    type="text"
-                    id="nome-addetto"
-                    name="name"
-                    placeholder="Nome Addetto"
-                    required
-                    minlength="2"
-                    maxlength="20"
-                    pattern="[A-Za-z]+"
-            >
-            <input
-                    type="text"
-                    id="cognome-addetto"
-                    name="surname"
-                    placeholder="Cognome Addetto"
-                    required
-                    minlength="2"
-                    maxlength="20"
-                    pattern="[A-Za-z]+"
-            >
-            <button type="button" id="aggiungi">Aggiungi Addetto</button>
-            <button type="button" id="annulla">Annulla</button>
-        </form>
+<body>
+
+<div class="coffee-machine auto-width">
+    <h1>👷 Gestione Addetti 👷</h1>
+
+    <h3 id="welcome-msg" style="color: #ffcc80; margin-bottom: 20px;">Gestore</h3>
+
+    <div class="nav-buttons" style="margin-bottom: 20px; display: flex; justify-content: space-between;">
+        <button onclick="location.href='gestore.html'" class="back-btn" style="width: 48%;">⬅️ Dashboard</button>
+        <button id="logout-btn" class="logout" style="background-color: #d32f2f; width: 48%;">Esci</button>
     </div>
+
+    <div class="card-panel" style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px;">
+        <h2>➕ Registra Nuovo Manutentore</h2>
+
+        <div class="input-group" style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+            <input type="text" id="new-nome" placeholder="Nome" style="flex: 1; min-width: 120px;">
+            <input type="text" id="new-cognome" placeholder="Cognome" style="flex: 1; min-width: 120px;">
+        </div>
+
+        <div class="input-group" style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 10px;">
+            <input type="text" id="new-user" placeholder="Username (Login)" style="flex: 1; min-width: 120px;">
+            <input type="password" id="new-pass" placeholder="Password" style="flex: 1; min-width: 120px;">
+        </div>
+
+        <button id="add-btn" class="action-btn" style="margin-top: 15px; width: 100%;">Crea Account Manutentore</button>
+    </div>
+
+    <div class="card-panel" style="margin-top: 20px;">
+        <h2>📋 Lista Manutentori</h2>
+        <button id="refresh-btn" class="refresh-btn">🔄 Aggiorna Lista</button>
+
+        <div class="table-responsive">
+            <table id="addetti-table" class="my-table">
+                <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Nome</th>
+                    <th>Cognome</th>
+                    <th>Ruolo</th>
+                    <th>Azioni</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

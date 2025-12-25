@@ -1,87 +1,100 @@
-// URL che punta al tuo nuovo GestoreController
-const API_URL = "http://localhost:8081/api/gestore/distributori";
-const tbody = document.getElementById("body");
+window.onload = function() {
+    console.log("--- GESTIONE MACCHINE CARICATA ---");
 
-// --- 1. CARICAMENTO DATI DAL SERVER ---
-function refreshList() {
-    fetch(API_URL)
-        .then(res => res.json()) // Leggiamo JSON, non più XML!
-        .then(data => {
-            tbody.innerHTML = "";
-            // Il server ci restituisce un array di macchine
-            data.forEach(macchina => {
-                let tr = document.createElement("tr");
+    const loggedUser = localStorage.getItem("username_loggato");
+    if (!loggedUser) {
+        alert("Login richiesto!");
+        window.location.href = "../../login.html";
+        return;
+    }
 
-                // Bottone Rimuovi
-                let btn = document.createElement("button");
-                btn.textContent = "-";
-                btn.onclick = () => rimuovi(macchina.id);
+    // URL corretti per il controller aggiornato
+    const API_URL = "http://localhost:8081/api/distributore";
+    const tableBody = document.querySelector("#macchine-table tbody");
+    const addBtn = document.getElementById("add-btn");
+    const refreshBtn = document.getElementById("refresh-btn");
 
-                tr.innerHTML = `
-                    <td>${macchina.id}</td>
-                    <td>${macchina.modello}</td>
-                    <td>${macchina.stato}</td>
-                `;
+    function caricaMacchine() {
+        fetch(API_URL + "/all")
+            .then(res => {
+                if(!res.ok) throw new Error("Errore server: " + res.status);
+                return res.json();
+            })
+            .then(data => {
+                tableBody.innerHTML = "";
+                if(data.length === 0) {
+                    tableBody.innerHTML = "<tr><td colspan='7'>Nessun distributore.</td></tr>";
+                    return;
+                }
+                data.forEach(macchina => {
+                    const row = document.createElement("tr");
+                    let statoIcon = macchina.stato === "Online" ? "🟢" : "🔴";
 
-                let tdBtn = document.createElement("td");
-                tdBtn.appendChild(btn);
-                tr.appendChild(tdBtn);
-                tbody.appendChild(tr);
-            });
-        })
-        .catch(err => console.error("Errore caricamento:", err));
-}
-
-// --- 2. RIMOZIONE ---
-function rimuovi(id) {
-    if(confirm("Vuoi davvero rimuovere il distributore " + id + "?")) {
-        fetch(API_URL + "/" + id, { method: 'DELETE' })
-            .then(() => {
-                alert("Distributore rimosso!");
-                refreshList();
+                    row.innerHTML = `
+                        <td><strong>${macchina.id}</strong></td>
+                        <td>${macchina.modello}</td>
+                        <td>${macchina.posizione}</td>
+                        <td>${statoIcon} ${macchina.stato}</td>
+                        <td>${macchina.nomeManutentore || '-'}</td>
+                        <td>${macchina.ultimaManutenzione || '-'}</td>
+                        <td><button class="delete-btn" onclick="elimina('${macchina.id}')">🗑️</button></td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(err => {
+                console.error(err);
+                tableBody.innerHTML = "<tr><td colspan='7' style='color:red;'>Errore connessione DB. Verifica che il server sia avviato.</td></tr>";
             });
     }
-}
 
-// --- 3. AGGIUNTA ---
-const aggiungi = document.getElementById("aggiungi");
-aggiungi.addEventListener('click', () => {
-    const nuovaMacchina = {
-        id: document.getElementById("id-macchina").value,
-        modello: document.getElementById("modelloa-macchina").value,
-        stato: document.getElementById("stato-macchina").value
+    if(addBtn) {
+        addBtn.onclick = function() {
+            const id = document.getElementById("new-id").value;
+            const model = document.getElementById("new-model").value;
+            const site = document.getElementById("new-site").value;
+            const status = document.getElementById("new-status").value;
+            const maintainer = document.getElementById("new-maintainer").value;
+            const date = document.getElementById("new-date").value;
+
+            if(!id || !model) { alert("ID e Modello obbligatori"); return; }
+
+            const payload = {
+                id: id,
+                modello: model,
+                posizione: site,
+                stato: status,
+                nomeManutentore: maintainer,
+                ultimaManutenzione: date || null
+            };
+
+            fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            }).then(res => {
+                if(res.ok) {
+                    alert("Aggiunto!");
+                    caricaMacchine();
+                } else {
+                    res.text().then(t => alert("Errore: " + t));
+                }
+            });
+        };
+    }
+
+    window.elimina = function(id) {
+        if(confirm("Eliminare ID " + id + "?")) {
+            fetch(API_URL + "/" + id, { method: "DELETE" })
+                .then(res => {
+                    if(res.ok) caricaMacchine();
+                    else alert("Errore eliminazione");
+                });
+        }
     };
 
-    fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(nuovaMacchina)
-    })
-        .then(res => {
-            if(res.ok) {
-                alert("Macchina aggiunta con successo!");
-                refreshList();
-                // Chiudi il form
-                document.getElementById("tab_aggiungi").style.display = "none";
-                document.getElementById("apri_aggiungi_tab").style.display = "block";
-            } else {
-                alert("Errore: ID duplicato o dati non validi.");
-            }
-        });
-});
+    if(refreshBtn) refreshBtn.onclick = caricaMacchine;
 
-// Gestione UI (Apertura/Chiusura Tab)
-const tabOpener = document.getElementById("apri_aggiungi_tab");
-tabOpener.addEventListener('click', () => {
-    document.getElementById("tab_aggiungi").style.display = "block";
-    tabOpener.style.display = "none";
-});
-
-const tabCloser = document.getElementById("annulla");
-tabCloser.addEventListener('click', () => {
-    document.getElementById("tab_aggiungi").style.display = "none";
-    tabOpener.style.display = "block";
-});
-
-// Avvia il caricamento iniziale
-refreshList();
+    // Avvio
+    caricaMacchine();
+};

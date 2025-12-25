@@ -2,27 +2,47 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>Stato Macchine</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stato Macchine Live</title>
     <link rel="stylesheet" href="gestore_style.css">
     <script src="stato_macchine.js" defer></script>
 </head>
 <body>
-<div class="coffee-machine" id="coffemachine" style="width: 500px;">
-    <h1>☕ Coffee CApp ☕</h1>
-    <h2>👑 Stato Macchine 👑</h2>
-    <input type="text" id="ricercaText" placeholder="Ricerca..."><span><button id="ricercainline">Ricerca</button></span>
-    <table class="my-table">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Modello</th>
-            <th>Posizione</th>
-            <th>Stato</th>
-            <th id="attivadisattiva">Comandi</th>
-        </tr>
-        </thead>
-        <tbody id="body"></tbody>
-    </table>
+
+<div class="coffee-machine auto-width">
+    <h1>📊 Monitoraggio Live 📊</h1>
+
+    <h3 id="welcome-msg" style="color: #ffcc80; margin-bottom: 20px;">Gestore</h3>
+
+    <div class="nav-buttons" style="margin-bottom: 20px; display: flex; justify-content: space-between;">
+        <button onclick="location.href='gestore.html'" class="back-btn" style="width: 48%;">⬅️ Dashboard</button>
+        <button id="logout-btn" class="logout" style="background-color: #d32f2f; width: 48%;">Esci</button>
+    </div>
+
+    <div class="card-panel" style="margin-top: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h2 style="margin: 0;">Stato Distributori</h2>
+            <button id="refresh-btn" class="refresh-btn" style="width: auto; margin: 0;">🔄 Aggiorna Ora</button>
+        </div>
+
+        <div class="table-responsive">
+            <table id="stato-table" class="my-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Posizione</th>
+                    <th>Stato</th>
+                    <th>Guasti Attivi</th>
+                    <th>Scorte Critiche</th>
+                    <th>Ultimo Check</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+
 </body>
 </html>

@@ -4,98 +4,69 @@ import org.example.progettofinalerobertocastro.entity.Utente;
 import org.example.progettofinalerobertocastro.repository.UtenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api")
-@CrossOrigin(origins = "*") // Fondamentale per far funzionare il JS
+@RequestMapping("/api/utente")
+@CrossOrigin(origins = "*")
 public class UtenteController {
 
     @Autowired
     private UtenteRepository utenteRepository;
 
-    @GetMapping("/utente/info")
-    public ResponseEntity<?> getUtenteInfo(@RequestParam String username) {
+    // 1. LOGIN
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Utente loginRequest) {
+        // CORREZIONE: Usa findByUsername
+        Optional<Utente> utente = utenteRepository.findByUsername(loginRequest.getUsername());
+
+        if (utente.isPresent() && utente.get().getPassword().equals(loginRequest.getPassword())) {
+            return ResponseEntity.ok(utente.get());
+        }
+        return ResponseEntity.status(401).body("Credenziali non valide");
+    }
+
+    // 2. INFO UTENTE
+    @GetMapping("/info")
+    public ResponseEntity<?> getUserInfo(@RequestParam String username) {
         Optional<Utente> utente = utenteRepository.findByUsername(username);
         if (utente.isPresent()) {
-            Utente u = utente.get();
-
-            // Usiamo HashMap per evitare crash se i valori sono null
-            java.util.Map<String, Object> risposta = new java.util.HashMap<>();
-            risposta.put("user_name", u.getNome() != null ? u.getNome() : "Utente");
-            risposta.put("credito", u.getCredito() != null ? u.getCredito() : 0.0);
-
-            return ResponseEntity.ok(risposta);
+            return ResponseEntity.ok(utente.get());
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(404).body("Utente non trovato");
     }
 
-    // API per la Ricarica (Quella che cercava il tuo JS)
-    // Chiama: POST http://localhost:8081/api/ricarica
-    @PostMapping("/ricarica")
-    public ResponseEntity<?> ricaricaCredito(@RequestBody Map<String, Object> payload) {
-        // CORREZIONE: Leggi lo username inviato dal JavaScript, non "Rob92" fisso!
-        String username = (String) payload.get("username");
-
-        // Conversione sicura dell'importo
-        Double importo;
-        try {
-            importo = Double.valueOf(payload.get("importo").toString());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Importo non valido");
-        }
-
-        Optional<Utente> utenteOpt = utenteRepository.findByUsername(username);
-
-        if (utenteOpt.isPresent()) {
-            Utente utente = utenteOpt.get();
-            utente.setCredito(utente.getCredito() + importo);
-            utenteRepository.save(utente);
-
-            return ResponseEntity.ok(Map.of(
-                    "success", true,
-                    "nuovo_credito", utente.getCredito()
-            ));
-        }
-        return ResponseEntity.badRequest().body("Utente non trovato");
+    // 3. GET LISTA MANUTENTORI
+    @GetMapping("/manutentori")
+    public List<Utente> getManutentori() {
+        return utenteRepository.findByRuolo("MANUTENTORE");
     }
-    // === REGISTRAZIONE UNIFICATA ===
-    @PostMapping("/utente/register")
+
+    // 4. REGISTRAZIONE
+    @PostMapping("/registra")
     public ResponseEntity<?> registraUtente(@RequestBody Utente nuovoUtente) {
-        // Controllo esistenza
-        if (utenteRepository.findByEmail(nuovoUtente.getEmail()).isPresent() ||
-                utenteRepository.findByUsername(nuovoUtente.getUsername()).isPresent()) {
-            return ResponseEntity.badRequest().body("Errore: Email o Username già in uso!");
+        if (utenteRepository.existsByUsername(nuovoUtente.getUsername())) {
+            return ResponseEntity.badRequest().body("Username già esistente!");
         }
-
-        // Imposta valori di default
-        if (nuovoUtente.getCredito() == null) nuovoUtente.setCredito(0.0);
-
-        // Se il ruolo non è specificato, di base è CLIENTE
-        if (nuovoUtente.getRuolo() == null || nuovoUtente.getRuolo().isEmpty()) {
+        if (nuovoUtente.getRuolo() == null) {
             nuovoUtente.setRuolo("CLIENTE");
         }
-
         utenteRepository.save(nuovoUtente);
-        return ResponseEntity.ok("Registrazione avvenuta con successo!");
+        return ResponseEntity.ok("Utente registrato con successo");
     }
 
-    // === LOGIN UNIFICATO ===
-    @PostMapping("/utente/login")
-    public ResponseEntity<?> loginUtente(@RequestBody Map<String, String> loginData) {
-        String username = loginData.get("username");
-        String password = loginData.get("password");
-
-        Optional<Utente> utenteTrovato = utenteRepository.findByUsernameAndPassword(username, password);
-
-        if (utenteTrovato.isPresent()) {
-            // Restituisce l'oggetto utente COMPLETO, incluso il RUOLO
-            return ResponseEntity.ok(utenteTrovato.get());
-        } else {
-            return ResponseEntity.status(401).body("Credenziali non valide");
+    // 5. ELIMINA UTENTE
+    @DeleteMapping("/{username}")
+    @Transactional // Necessario per deleteByUsername
+    public ResponseEntity<?> eliminaUtente(@PathVariable String username) {
+        if (utenteRepository.existsByUsername(username)) {
+            utenteRepository.deleteByUsername(username);
+            return ResponseEntity.ok("Utente eliminato.");
         }
+        return ResponseEntity.status(404).body("Utente non trovato.");
     }
 }

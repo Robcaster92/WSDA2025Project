@@ -1,148 +1,95 @@
-console.log("start");
-const table = document.getElementsByClassName("my-table")
-const urlXSD = "../XML/machine_status.xml"
-function Macchina(id, modello,posizione, stato){
-    this.id = id;
-    this.modello = modello;
-    this.posizione = posizione
-    this.stato = stato;
-}
-let arrayMacchine = [];
+window.onload = function() {
+    console.log("--- STATO MACCHINE LIVE CARICATO ---");
 
-tbody = document.getElementById("body");
-fetch(urlXSD)
-    .then(res => res.text())
-    .then(xmlStr => {
-        const xml = new DOMParser().parseFromString(xmlStr, "text/xml");
-
-        const macchine = xml.getElementsByTagName("Distributore");
-        let x = 0;
-        for (let macchina of macchine) {
-            const id = macchina.getElementsByTagName("ID")[0].textContent;
-            const modello = macchina.getElementsByTagName("Modello")[0].textContent;
-            const posizione = macchina.getElementsByTagName("Posizione")[0].textContent;
-            const stato = macchina.getElementsByTagName("Stato")[0].textContent;
-            arrayMacchine[x] = new Macchina(id,modello,posizione,stato);
-            x+=1;
-        }
-        refreshList();
-    });
-function refreshList() {
-    tbody.innerHTML = ""; // svuota la tabella
-
-    for (let j = 0; j < arrayMacchine.length; j++) {
-        let tr = document.createElement("tr");
-
-        // crea il bottone
-        let btn = document.createElement("button");
-        btn.textContent = "I/O";
-        btn.id = "rimuovi_" + j;
-
-        // evento click per aggiornare lo stato
-        btn.addEventListener("click", () => {
-            if(arrayMacchine[j].stato == "Online"){
-                alert(arrayMacchine[j].id + " Disattivato!");
-                arrayMacchine[j].stato = "Offline";
-            }else{
-                alert(arrayMacchine[j].id + " Attivato!");
-                arrayMacchine[j].stato = "Online";
-            }
-            refreshList();
-        })
-
-        if(arrayMacchine[j].stato == "Online") {
-            tr.innerHTML = `
-            <td>${arrayMacchine[j].id}</td>
-            <td>${arrayMacchine[j].modello}</td>
-            <td>${arrayMacchine[j].posizione}</td>
-            <td>${arrayMacchine[j].stato} 🟢</td>
-            `;
-        }else{
-            tr.innerHTML = `
-            <td>${arrayMacchine[j].id}</td>
-            <td>${arrayMacchine[j].modello}</td>
-            <td>${arrayMacchine[j].posizione}</td>
-            <td>${arrayMacchine[j].stato} 🔴</td>
-            `;
-        }
-        let tdBtn = document.createElement("td");
-        tdBtn.appendChild(btn);
-        tr.appendChild(tdBtn);
-        tbody.appendChild(tr);
+    const loggedUser = localStorage.getItem("username_loggato");
+    if (!loggedUser) {
+        alert("Login richiesto!");
+        window.location.href = "../login.html";
+        return;
     }
-    const ricercaBtn = document.getElementById("ricercainline")
-    ricercaBtn.addEventListener('click', () => {
-        let ricercaTxt = document.getElementById("ricercaText").value;
-        if(ricercaTxt == ""){
-            alert("Impossibile eseguire una ricerca vuota!");
-            return;
-        }
-        let output = cerca(arrayMacchine, ricercaTxt);
-        searchRefresh(output);
-    })
-    function cerca(lista, valore) {
-        valore = valore.toString().toLowerCase();
 
-        return lista.filter(item =>
-            item.id.toString().toLowerCase().includes(valore) || item.modello.toLowerCase().includes(valore) || item.posizione.toString().toLowerCase().includes(valore)
-        );
-    }
-    function searchRefresh(output){
-        tbody.innerHTML = ""; // svuota la tabella
-        for (let j = 0; j < output.length; j++) {
-            let tr = document.createElement("tr");
-            // crea il bottone
-            let btn = document.createElement("button");
-            btn.textContent = "I/O";
-            btn.id = "rimuovi_" + j;
+    const welcomeLabel = document.getElementById("welcome-msg");
+    if(welcomeLabel) welcomeLabel.textContent = "Utente: " + loggedUser;
 
-            // evento click per aggiornare lo stato
-            btn.addEventListener("click", () => {
-                if(output[j].stato == "Online"){
-                    alert(output[j].id + " Disattivato!");
-                    output[j].stato = "Offline";
-                }else{
-                    alert(output[j].id + " Attivato!");
-                    output[j].stato = "Online";
+    const API_URL = "http://localhost:8081/api/distributore";
+    const tableBody = document.querySelector("#stato-table tbody");
+    const refreshBtn = document.getElementById("refresh-btn");
+    const logoutBtn = document.getElementById("logout-btn");
+
+    function caricaStato() {
+        fetch(API_URL + "/all")
+            .then(res => res.json())
+            .then(data => {
+                tableBody.innerHTML = "";
+
+                if(data.length === 0) {
+                    tableBody.innerHTML = "<tr><td colspan='6'>Nessun distributore monitorato.</td></tr>";
+                    return;
                 }
-                searchRefresh(output);
+
+                data.forEach(macchina => {
+                    const row = document.createElement("tr");
+
+                    // 1. ANALISI STATO
+                    let statoHtml = macchina.stato === "Online"
+                        ? "<span style='color: lightgreen; font-weight: bold;'>Online 🟢</span>"
+                        : "<span style='color: #ff8a80; font-weight: bold;'>Offline 🔴</span>";
+
+                    if(macchina.stato === "Manutenzione") statoHtml = "<span style='color: orange;'>Manutenzione 🛠️</span>";
+
+                    // 2. ANALISI GUASTI
+                    let guastiHtml = "✅ Nessuno";
+                    if (macchina.guasti && macchina.guasti.length > 0) {
+                        guastiHtml = `<span style="color: #ff8a80;">⚠️ ${macchina.guasti.length} Guasti</span>`;
+                    }
+
+                    // 3. ANALISI SCORTE (Critiche se < 20%)
+                    let scorteHtml = "✅ Ok";
+                    let scorteCritiche = [];
+
+                    if (macchina.scorte) {
+                        macchina.scorte.forEach(s => {
+                            let perc = (s.quantita / s.maxQuantita) * 100;
+                            if (perc < 20) {
+                                scorteCritiche.push(s.bevanda.nome); // Aggiunge nome bevanda
+                            }
+                        });
+                    }
+
+                    if (scorteCritiche.length > 0) {
+                        scorteHtml = `<span style="color: orange;">⚠️ ${scorteCritiche.join(", ")}</span>`;
+                    }
+
+                    // 4. DATA CHECK (Usiamo l'ultima manutenzione come riferimento temporale o la data odierna)
+                    let lastCheck = macchina.ultimaManutenzione || new Date().toLocaleDateString();
+
+                    row.innerHTML = `
+                        <td><strong>${macchina.id}</strong></td>
+                        <td>${macchina.posizione}</td>
+                        <td>${statoHtml}</td>
+                        <td>${guastiHtml}</td>
+                        <td>${scorteHtml}</td>
+                        <td style="font-size: 0.8rem; color: #ccc;">${lastCheck}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
             })
-
-            if(output[j].stato == "Online") {
-                tr.innerHTML = `
-            <td>${output[j].id}</td>
-            <td>${output[j].modello}</td>
-            <td>${output[j].posizione}</td>
-            <td>${output[j].stato} 🟢</td>
-            `;
-            }else{
-                tr.innerHTML = `
-            <td>${output[j].id}</td>
-            <td>${output[j].modello}</td>
-            <td>${output[j].posizione}</td>
-            <td>${output[j].stato} 🔴</td>
-            `;
-            }
-            let tdBtn = document.createElement("td");
-            tdBtn.appendChild(btn);
-            tr.appendChild(tdBtn);
-            tbody.appendChild(tr);
-        }
-        const container = document.getElementById("coffemachine");
-        // rimuovi il bottone precedente se esiste (eviti duplicati)
-        const existing = container.querySelector("#clearFilters");
-        if (existing){
-            existing.remove();
-        }
-
-
-        const clearBtn = document.createElement("button");
-        clearBtn.id = "clearFilters";
-        clearBtn.textContent = "Cancella Filtri Di Ricerca";
-        clearBtn.addEventListener("click", () => {
-            // reindirizza
-            window.location.href = "stato_macchine.html";
-        });
-        document.getElementById("coffemachine").append(clearBtn);
+            .catch(err => {
+                console.error(err);
+                tableBody.innerHTML = "<tr><td colspan='6' style='color:red;'>Errore connessione server.</td></tr>";
+            });
     }
-}
+
+    if(refreshBtn) refreshBtn.onclick = caricaStato;
+
+    if(logoutBtn) {
+        logoutBtn.onclick = function() {
+            localStorage.removeItem("username_loggato");
+            window.location.href = "../login.html";
+        };
+    }
+
+    // Caricamento iniziale e Auto-Refresh ogni 10 secondi
+    caricaStato();
+    setInterval(caricaStato, 10000); // Polling ogni 10 sec
+};

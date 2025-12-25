@@ -1,132 +1,178 @@
 body {
-  background: linear-gradient(135deg, #d7a86e, #f7e7ce);
-  font-family: "Poppins", sans-serif;
-  color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+    background: linear-gradient(135deg, #d7a86e, #f7e7ce);
+    font-family: "Poppins", sans-serif;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Usa min-height per permettere lo scroll verticale */
+    margin: 0;
 }
 
+/* ... MANTIENI TUTTO IL RESTO UGUALE ... */
+
 .coffee-machine {
-  background: #4e342e;
-  padding: 2rem;
-  border-radius: 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  text-align: center;
-  width: 340px;
+    background: #4e342e;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+
+    /* Default per login (stretto) */
+    width: 340px;
+    transition: all 0.3s ease;
+}
+
+/* === NUOVA CLASSE: ADATTAMENTO AUTOMATICO AL TESTO === */
+/* Questa classe sovrascrive la larghezza fissa */
+.coffee-machine.auto-width {
+    width: fit-content !important;  /* Si adatta alla tabella */
+    min-width: 340px;               /* Mai più piccolo del login */
+    max-width: 95vw;                /* Mai più largo dello schermo */
+    margin: 20px auto;              /* Centrato con margine */
+}
+
+/* Stile Tabella migliorato */
+.my-table {
+    white-space: nowrap; /* Impedisce al testo di andare a capo male */
+}
+
+/* === REGOLE SPECIFICHE PER ALLARGARE IL PANNELLO DI GESTIONE === */
+/* Queste regole si attivano grazie all'ID nel tag <body> delle pagine HTML */
+#gestisci_macchina .coffee-machine,
+#gestisci_addetto .coffee-machine {
+    width: 950px !important; /* Forza la larghezza a 950px */
+    max-width: 95%; /* Per schermi piccoli */
 }
 
 h1 {
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
-  color: #ffcc80;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    color: #ffcc80;
 }
 
 h2, h3 {
-  color: white;
-  text-align: center;
+    color: white;
+    text-align: center;
 }
 
 .info {
-  background: #3e2723;
-  border-radius: 10px;
-  padding: 0.8rem;
-  margin: 1rem 0;
-  text-align: left;
+    background: #3e2723;
+    border-radius: 10px;
+    padding: 0.8rem;
+    margin: 1rem 0;
+    text-align: left;
 }
 
 input {
-  display: block;
-  margin: 0.5rem auto;
-  padding: 0.5rem;
-  width: 80%;
-  border: none;
-  border-radius: 8px;
-  background: #6d4c41;
-  color: #fff;
-  font-size: 1rem;
+    display: block;
+    margin: 0.5rem auto;
+    padding: 0.5rem;
+    width: 80%;
+    border: none;
+    border-radius: 8px;
+    background: #6d4c41;
+    color: #fff;
+    font-size: 1rem;
 }
 
 input::placeholder {
-  color: #d7ccc8;
+    color: #d7ccc8;
 }
 
 button {
-  display: block;
-  margin: 0.5rem auto;
-  padding: 0.5rem;
-  width: 80%;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: bold;
-  background: #ffcc80;
-  color: #3e2723;
-  cursor: pointer;
-  transition: background 0.3s;
+    display: block;
+    margin: 0.5rem auto;
+    padding: 0.5rem;
+    width: 80%;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    background: #ffcc80;
+    color: #3e2723;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background-color: #ffb74d;
 }
 
 .logout, a {
-  background: #d32f2f;
-  color: #fff;
+    background: #d32f2f;
+    color: #fff;
 }
 
-
 .status.on {
-  color: #8bc34a;
+    color: #8bc34a;
 }
 
 .status.off {
-  color: #e57373;
+    color: #e57373;
 }
 
 .hidden {
-  display: none;
+    display: none;
 }
 
 .section {
-  margin-top: 1rem;
+    margin-top: 1rem;
 }
 
+/* Stile della Tabella */
 .my-table {
     border-collapse: collapse;
     width: 100%;
     font-family: Arial, sans-serif;
-
-    /* IMPORTANTE: Questo obbliga la tabella a stare nei 276px disponibili */
-    table-layout: fixed;
+    margin-top: 20px;
+    background-color: rgba(255, 255, 255, 0.05); /* Sfondo leggero per la tabella */
 }
 
 .my-table th,
 .my-table td {
-    border: 1px solid #000;
-    padding: 6px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 10px;
     text-align: center;
-
-    /* IMPORTANTE: Queste righe gestiscono il testo lungo */
-    word-wrap: break-word;       /* Per compatibilità */
-    overflow-wrap: break-word;   /* Standard moderno */
-    word-break: break-all;       /* Spezza brutalmente la stringa se non ci sono spazi */
+    vertical-align: middle;
+    color: #fff;
 }
 
 .my-table th {
     background-color: #ffcc80;
-    color: black;
+    color: #3e2723; /* Testo scuro su sfondo arancione */
+    font-weight: bold;
 }
 
-#rimuovi{
-    color:red;
+/* Bottoni specifici della tabella */
+.delete-btn {
+    background-color: #e53935; /* Rosso più acceso */
+    color: white;
+    width: auto; /* Larghezza automatica */
+    padding: 5px 10px;
+    margin: 0 auto;
+    font-size: 0.9rem;
 }
+
+.delete-btn:hover {
+    background-color: #b71c1c;
+}
+
+/* Stile Input e Bottoni inline */
+#rimuovi{
+    color: #ff8a80;
+}
+
 #ricercaText{
-    display: inline-flex;
+    display: inline-block;
     color: white;
     width: 60%;
     text-align: left;
     margin-right: 10px;
 }
+
 #ricercainline{
-    display: inline-flex;
-    width: 20%;
-    text-align: right;
+    display: inline-block;
+    width: 25%;
+    text-align: center;
 }

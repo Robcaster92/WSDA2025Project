@@ -1,98 +1,124 @@
-console.log("start");
-const table = document.getElementsByClassName("my-table")
-const urlXSD = "../XML/maintainer_status.xml"
-function Addetto(id, nome, cognome){
-    this.id = id;
-    this.nome = nome;
-    this.cognome = cognome;
-}
-let arrayAddetti = [];
-const bodyID = document.body.id;
+window.onload = function() {
+    console.log("--- GESTIONE ADDETTI CARICATA ---");
 
-tbody = document.getElementById("body");
-fetch(urlXSD)
-    .then(res => res.text())
-    .then(xmlStr => {
-        const xml = new DOMParser().parseFromString(xmlStr, "text/xml");
+    const loggedUser = localStorage.getItem("username_loggato");
+    if (!loggedUser) {
+        alert("Login richiesto!");
+        window.location.href = "../login.html";
+        return;
+    }
 
-        const persone = xml.getElementsByTagName("Maintainer");
-        const tbody = document.getElementById("body");
-        let x = 0;
-        for (let persona of persone) {
-            const id = persona.getElementsByTagName("ID")[0].textContent;
-            const nome = persona.getElementsByTagName("Nome")[0].textContent;
-            const cognome = persona.getElementsByTagName("Cognome")[0].textContent;
-            arrayAddetti[x] = new Addetto(id,nome,cognome);
-            x+=1;
+    const welcomeLabel = document.getElementById("welcome-msg");
+    if(welcomeLabel) welcomeLabel.textContent = "Utente: " + loggedUser;
+
+    // URL Backend
+    const API_URL = "http://localhost:8081/api/utente";
+    const tableBody = document.querySelector("#addetti-table tbody");
+    const addBtn = document.getElementById("add-btn");
+    const refreshBtn = document.getElementById("refresh-btn");
+    const logoutBtn = document.getElementById("logout-btn");
+
+    // 1. CARICA LISTA MANUTENTORI
+    function caricaAddetti() {
+        fetch(API_URL + "/manutentori")
+            .then(res => {
+                if(!res.ok) throw new Error("Errore server: " + res.status);
+                return res.json();
+            })
+            .then(data => {
+                tableBody.innerHTML = "";
+                if(data.length === 0) {
+                    tableBody.innerHTML = "<tr><td colspan='5'>Nessun manutentore trovato.</td></tr>";
+                    return;
+                }
+
+                data.forEach(utente => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td><strong>${utente.username}</strong></td>
+                        <td>${utente.nome || '-'}</td>
+                        <td>${utente.cognome || '-'}</td>
+                        <td style="color: #ffcc80;">${utente.ruolo}</td>
+                        <td>
+                            <button class="delete-btn" onclick="eliminaAddetto('${utente.username}')">🗑️ Elimina</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(err => {
+                console.error(err);
+                tableBody.innerHTML = "<tr><td colspan='5' style='color:red;'>Errore connessione DB.</td></tr>";
+            });
+    }
+
+    // 2. AGGIUNGI MANUTENTORE
+    if(addBtn) {
+        addBtn.onclick = function() {
+            const nome = document.getElementById("new-nome").value.trim();
+            const cognome = document.getElementById("new-cognome").value.trim();
+            const user = document.getElementById("new-user").value.trim();
+            const pass = document.getElementById("new-pass").value.trim();
+
+            if(!user || !pass) {
+                alert("Username e Password sono obbligatori!");
+                return;
+            }
+
+            const payload = {
+                username: user,
+                password: pass,
+                nome: nome,
+                cognome: cognome,
+                ruolo: "MANUTENTORE", // Forziamo il ruolo
+                credito: 0.0
+            };
+
+            fetch(API_URL + "/registra", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            }).then(res => {
+                if(res.ok) {
+                    alert("Manutentore creato con successo!");
+                    // Pulisci campi
+                    document.getElementById("new-nome").value = "";
+                    document.getElementById("new-cognome").value = "";
+                    document.getElementById("new-user").value = "";
+                    document.getElementById("new-pass").value = "";
+                    caricaAddetti();
+                } else {
+                    res.text().then(t => alert("Errore: " + t));
+                }
+            }).catch(err => alert("Errore di rete: " + err));
+        };
+    }
+
+    // 3. ELIMINA ADDETTO
+    window.eliminaAddetto = function(username) {
+        if(confirm("Eliminare definitivamente l'utente " + username + "?")) {
+            fetch(API_URL + "/" + username, { method: "DELETE" })
+                .then(res => {
+                    if(res.ok) {
+                        alert("Eliminato!");
+                        caricaAddetti();
+                    } else {
+                        alert("Errore eliminazione");
+                    }
+                })
+                .catch(err => alert("Errore: " + err));
         }
-        console.log(x);
-        console.log(arrayAddetti);
-        refreshList();
-    });
-function refreshList() {
-    const tbody = document.getElementById("body");
-    tbody.innerHTML = ""; // svuota la tabella
+    };
 
-    for (let j = 0; j < arrayAddetti.length; j++) {
-        let tr = document.createElement("tr");
+    if(refreshBtn) refreshBtn.onclick = caricaAddetti;
 
-        // crea il bottone
-        let btn = document.createElement("button");
-        btn.textContent = "-";
-        btn.id = "rimuovi_" + j;
-
-        // evento click per rimuovere l'elemento corrispondente
-        btn.addEventListener("click", () => {
-            alert(arrayAddetti[j].nome + " " + arrayAddetti[j].cognome + " rimosso dalla lista!");
-            arrayAddetti.splice(j, 1);
-            refreshList();
-        })
-
-        tr.innerHTML = `
-            <td>${arrayAddetti[j].id}</td>
-            <td>${arrayAddetti[j].nome}</td>
-            <td>${arrayAddetti[j].cognome}</td>
-        `;
-
-        let tdBtn = document.createElement("td");
-        tdBtn.appendChild(btn);
-        tr.appendChild(tdBtn);
-        tbody.appendChild(tr);
+    if(logoutBtn) {
+        logoutBtn.onclick = function() {
+            localStorage.removeItem("username_loggato");
+            window.location.href = "../login.html";
+        };
     }
-}
 
-
-const aggiungi = document.getElementById("aggiungi");
-let trovato = false;
-aggiungi.addEventListener('click', () => {
-    const ID_addetto = document.getElementById("id-addetto").value;
-    const name_addetto = document.getElementById("nome-addetto").value;
-    const surname_addetto = document.getElementById("cognome-addetto").value;
-    console.log(ID_addetto);
-    for(let x = 0; x < arrayAddetti.length; x++){
-        if(arrayAddetti[x].id === ID_addetto){
-            trovato = true;
-            console.log("trovato");
-        }
-    }
-    if(trovato){
-        alert("ID gia presente nel sistema!")
-        trovato = false;
-    }else{
-        arrayAddetti.push(new Addetto(ID_addetto,name_addetto,surname_addetto));
-        console.log(arrayAddetti.length);
-        refreshList();
-        alert(arrayAddetti[-1].nome + " " + arrayAddetti[-1].cognome + " aggiunto in lista!");
-    }
-})
-
-const tabOpener = document.getElementById("apri_aggiungi_tab");
-tabOpener.addEventListener('click', () => {
-    document.getElementById("tab_aggiungi").style.display = "block";
-    tabOpener.style.display = "none";
-})
-const tabCloser = document.getElementById("annulla");
-tabCloser.addEventListener('click', () => {
-    document.getElementById("tab_aggiungi").style.display = "none";
-    tabOpener.style.display = "block";
-})
+    // Avvio
+    caricaAddetti();
+};

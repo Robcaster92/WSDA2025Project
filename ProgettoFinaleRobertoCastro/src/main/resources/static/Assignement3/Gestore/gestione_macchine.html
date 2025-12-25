@@ -2,57 +2,66 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestione Macchine</title>
     <link rel="stylesheet" href="gestore_style.css">
-    <script src="jquery-3.4.1.min.js"></script>
     <script src="gestione_macchine.js" defer></script>
 </head>
-<body id="gestisci_macchina">
-<div class="coffee-machine">
-    <h1>☕ Coffee CApp ☕</h1>
-    <p>Gestione Macchine</p>
-    <table class="my-table">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Modello</th>
-            <th>Stato</th>
-            <th id="rimuove">Rimuovi</th>
-        </tr>
-        </thead>
-        <tbody id="body"></tbody>
-    </table>
-    <button id="apri_aggiungi_tab">Aggiungi</button>
-    <form id="tab_aggiungi" method="get"  style="display: none">
-        <input type="text"
-               id="id-macchina"
-               name="id"
-               placeholder="Es: 1234"
-               required
-               minlength="4"
-               maxlength="4"
-        >
-        <input
-                type="text"
-                id="modelloa-macchina"
-                name="name"
-                placeholder="Modello Macchina"
-                required
-                minlength="2"
-                maxlength="20"
-        >
-        <input
-                type="text"
-                id="stato-macchina"
-                name="surname"
-                placeholder="Stato Macchina"
-                required
-                minlength="2"
-                maxlength="20"
-        >
-        <button type="button" id="aggiungi">Aggiungi Macchina</button>
-        <button type="button" id="annulla">Annulla</button>
-    </form>
+<body>
+<div class="coffee-machine auto-width">
+    <h1>☕ Gestione Macchine ☕</h1>
+
+    <h3 id="welcome-msg" style="color: #ffcc80; margin-bottom: 20px;">Gestore</h3>
+
+    <div class="nav-buttons" style="margin-bottom: 20px; display: flex; justify-content: space-between;">
+        <button onclick="location.href='gestore.html'" class="back-btn" style="width: 48%;">⬅️ Dashboard</button>
+        <button id="logout-btn" class="logout" style="background-color: #d32f2f; width: 48%;">Esci</button>
+    </div>
+
+    <div class="card-panel" style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px;">
+        <h2>➕ Registra Nuovo Distributore</h2>
+
+        <div class="input-group" style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; color: #d7a86e;">
+            <input type="text" id="new-id" placeholder="ID (es. 1050)" style="flex: 1; min-width: 100px;">
+            <input type="text" id="new-model" placeholder="Modello" style="flex: 1; min-width: 100px;">
+            <input type="text" id="new-site" placeholder="Posizione" style="flex: 1; min-width: 100px;">
+        </div>
+
+        <div class="input-group" style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 10px;">
+            <select id="new-status" style="flex: 1; padding: 10px; border-radius: 5px;">
+                <option value="Online">Online 🟢</option>
+                <option value="Offline">Offline 🔴</option>
+                <option value="Manutenzione">In Manutenzione 🛠️</option>
+            </select>
+            <input type="text" id="new-maintainer" placeholder="Manutentore" style="flex: 1; min-width: 120px;">
+            <input type="date" id="new-date" style="flex: 1; min-width: 120px;">
+        </div>
+
+        <button id="add-btn" class="action-btn" style="margin-top: 15px; width: 100%;">Aggiungi Distributore</button>
+    </div>
+
+    <div class="card-panel" style="margin-top: 20px;">
+        <h2>📋 Lista Distributori</h2>
+        <button id="refresh-btn" class="refresh-btn">🔄 Aggiorna Lista</button>
+
+        <div class="table-responsive">
+            <table id="macchine-table" class="my-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Modello</th>
+                    <th>Posizione</th>
+                    <th>Stato</th>
+                    <th>Manutentore</th>
+                    <th>Ultima Manut.</th>
+                    <th>Azioni</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 </body>
 </html>
