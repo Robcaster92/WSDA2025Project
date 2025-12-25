@@ -61,7 +61,6 @@ public class Distributore {
     public String getNomeManutentore() {
         return nomeManutentore;
     }
-
     public void setNomeManutentore(String nomeManutentore) {
         this.nomeManutentore = nomeManutentore;
     }

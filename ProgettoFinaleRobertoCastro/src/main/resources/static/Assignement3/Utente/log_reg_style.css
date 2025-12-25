@@ -59,16 +59,3 @@ button {
 
     color: #000000;
 }
-.checkbox{
-    display: inline-block;
-    margin: 0.5rem auto;
-    padding: 0.5rem;
-    width: 80%;
-    border-radius:1px;
-    font-size: 1rem;
-    font-weight: bold;
-    accent-color: #ffcc80;;
-    color: #3e2723;
-    cursor: pointer;
-    transition: background 0.3s;
-}
