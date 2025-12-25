@@ -2,28 +2,38 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>Registrazione</title>
-    <link rel="stylesheet" href="log_reg_style.css">
+    <title>Registrazione - Coffee CApp</title>
+    <link rel="stylesheet" href="Utente/log_reg_style.css">
 </head>
 <body>
-<div class="login-container">
-    <h2>Registrazione</h2>
-    <form id="register-form">
-        <input type="text" id="username" placeholder="Scegli un Username" required>
+<div class="coffee-machine">
+    <h1>☕ Coffee CApp ☕</h1>
+    <h2>Crea Account</h2>
 
+    <form id="register-form">
+        <input type="text" id="username" placeholder="Username" required>
         <input type="text" id="nome" placeholder="Nome" required>
         <input type="text" id="cognome" placeholder="Cognome" required>
         <input type="email" id="email" placeholder="Email" required>
+        <input type="date" id="data" placeholder="Data" required>
         <input type="password" id="password" placeholder="Password" required>
+
+        <label for="ruolo" style="color: #ffcc80; display: block; text-align: center; margin-bottom: 5px;">Registrati come:</label>
+        <select id="ruolo" required style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px;">
+            <option value="CLIENTE">Cliente</option>
+            <option value="MANUTENTORE">Manutentore</option>
+            <option value="GESTORE">Gestore</option>
+        </select>
 
         <button type="submit">Registrati</button>
     </form>
+
     <p>Hai già un account? <a href="login.html">Accedi</a></p>
 </div>
 
 <script>
     document.getElementById("register-form").addEventListener("submit", function(e) {
-        e.preventDefault(); // Ferma il ricaricamento della pagina
+        e.preventDefault();
 
         const datiUtente = {
             username: document.getElementById("username").value,
@@ -31,6 +41,7 @@
             cognome: document.getElementById("cognome").value,
             email: document.getElementById("email").value,
             password: document.getElementById("password").value,
+            ruolo: document.getElementById("ruolo").value, // Invia il ruolo scelto
             credito: 0.0
         };
 
