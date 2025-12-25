@@ -1,5 +1,6 @@
 package org.example.progettofinalerobertocastro.entity;
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "parametri_tecnici")
@@ -12,6 +13,7 @@ public class ParametriTecnici {
     @OneToOne
     @MapsId
     @JoinColumn(name = "id_distributore")
+    @JsonIgnore
     private Distributore distributore;
 
     private Integer temperatura;

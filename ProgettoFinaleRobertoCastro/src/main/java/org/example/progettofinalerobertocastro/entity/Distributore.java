@@ -18,6 +18,9 @@ public class Distributore {
     @Column(name = "ultima_manutenzione")
     private LocalDate ultimaManutenzione;
 
+    @Column(name = "nome_manutentore")
+    private String nomeManutentore = "Non Assegnato"; // Valore di default
+
     // Relazione 1-a-1 con i Parametri Tecnici
     @OneToOne(mappedBy = "distributore", cascade = CascadeType.ALL)
     private ParametriTecnici parametriTecnici;
@@ -54,4 +57,12 @@ public class Distributore {
 
     public List<Guasto> getGuasti() { return guasti; }
     public void setGuasti(List<Guasto> guasti) { this.guasti = guasti; }
+
+    public String getNomeManutentore() {
+        return nomeManutentore;
+    }
+
+    public void setNomeManutentore(String nomeManutentore) {
+        this.nomeManutentore = nomeManutentore;
+    }
 }

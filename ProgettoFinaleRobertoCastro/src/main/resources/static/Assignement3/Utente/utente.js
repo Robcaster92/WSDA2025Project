@@ -10,8 +10,22 @@ const RECHARGE_API_URL = "http://localhost:8081/api/ricarica";
 
 let currentMachineId = null;
 
-const USER_INFO_URL = "http://localhost:8081/api/utente/info?username=Rob92";
+// Recupera lo username salvato durante il login
+const loggedUser = localStorage.getItem("username_loggato");
+
+// Se non c'è nessuno loggato, rimanda al login
+if (!loggedUser) {
+    alert("Devi effettuare il login!");
+    window.location.href = "login.html";
+}
+
+
+const USER_INFO_URL = "http://localhost:8081/api/utente/info?username=" + loggedUser;
 const RECHARGE_API_URL = "http://localhost:8081/api/ricarica";
+
+let currentMachineId = null;
+
+
 
 // ... (il resto delle variabili connectBtn, etc rimane uguale) ...
 
@@ -53,6 +67,8 @@ connectBtn.addEventListener('click', () => {
 
 // --- GESTIONE DISCONNESSIONE ---
 disconnectBtn.addEventListener('click', () => {
+    localStorage.removeItem("username_loggato"); // Pulisce la memoria
+    window.location.href = 'login.html';
     statusMsg.textContent = "❌ Disconnesso dal distributore " + currentMachineId;
     currentMachineId = null;
     machineInput.value = "";
@@ -65,7 +81,7 @@ disconnectBtn.addEventListener('click', () => {
 rechargeBtn.addEventListener('click', () => {
     let importo = prompt("Inserire l'importo da ricaricare (es. 5.00): ");
 
-    if (importo !== null && !isNaN(parseFloat(importo)) && importo.trim() !== "") {
+    if (importo !== null && importo > 0 && !isNaN(parseFloat(importo)) && importo.trim() !== "") {
         if (confirm("Confermare per ricaricare l'importo di " + importo + "€?")){
 
             statusMsg.textContent = "🔄 Elaborazione ricarica in corso...";

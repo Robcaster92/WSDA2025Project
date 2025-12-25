@@ -55,4 +55,40 @@ public class UtenteController {
         }
         return ResponseEntity.badRequest().body("Utente non trovato");
     }
+    // === REGISTRAZIONE ===
+    // Chiamata: POST http://localhost:8081/api/utente/register
+    @PostMapping("/register")
+    public ResponseEntity<?> registraUtente(@RequestBody Utente nuovoUtente) {
+        // 1. Controlla se esiste già
+        if (utenteRepository.findByEmail(nuovoUtente.getEmail()).isPresent() ||
+                utenteRepository.findByUsername(nuovoUtente.getUsername()).isPresent()) {
+            return ResponseEntity.badRequest().body("Errore: Email o Username già in uso!");
+        }
+
+        // 2. Imposta credito iniziale a 0 se nullo
+        if (nuovoUtente.getCredito() == null) {
+            nuovoUtente.setCredito(0.0);
+        }
+
+        // 3. Salva nel DB (password in chiaro come richiesto)
+        utenteRepository.save(nuovoUtente);
+        return ResponseEntity.ok("Registrazione avvenuta con successo!");
+    }
+
+    // === LOGIN ===
+    // Chiamata: POST http://localhost:8081/api/utente/login
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUtente(@RequestBody Map<String, String> loginData) {
+        String username = loginData.get("username");
+        String password = loginData.get("password");
+
+        Optional<Utente> utenteTrovato = utenteRepository.findByUsernameAndPassword(username, password);
+
+        if (utenteTrovato.isPresent()) {
+            // Ritorna i dati dell'utente (senza password per sicurezza, se vuoi pulire il JSON)
+            return ResponseEntity.ok(utenteTrovato.get());
+        } else {
+            return ResponseEntity.status(401).body("Credenziali non valide");
+        }
+    }
 }

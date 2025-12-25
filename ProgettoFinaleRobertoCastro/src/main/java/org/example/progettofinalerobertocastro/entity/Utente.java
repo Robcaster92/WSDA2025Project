@@ -9,6 +9,11 @@ public class Utente {
     private Long id;
 
     private String username;
+
+    // --- CAMPO MANCANTE AGGIUNTO ---
+    private String email;
+    // -------------------------------
+
     private String password;
     private String ruolo; // 'CLIENTE', 'MANUTENTORE', 'GESTORE'
     private String nome;
@@ -24,6 +29,11 @@ public class Utente {
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
+
+    // --- GETTER E SETTER PER EMAIL AGGIUNTI ---
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    // ------------------------------------------
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }

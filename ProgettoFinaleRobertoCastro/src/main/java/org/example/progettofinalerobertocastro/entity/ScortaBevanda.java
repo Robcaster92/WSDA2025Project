@@ -1,6 +1,7 @@
 package org.example.progettofinalerobertocastro.entity;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "scorta_bevanda")
@@ -11,6 +12,7 @@ public class ScortaBevanda {
 
     @ManyToOne
     @JoinColumn(name = "id_distributore")
+    @JsonIgnore
     private Distributore distributore;
 
     @ManyToOne

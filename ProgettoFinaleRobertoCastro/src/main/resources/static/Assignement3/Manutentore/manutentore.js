@@ -1,4 +1,4 @@
-//const di riferimento
+// Riferimenti HTML
 const machineidText = document.getElementById("machine-id-label");
 const machinetypeText = document.getElementById("machine-type-label");
 const machinesiteText = document.getElementById("machine-site-label");
@@ -11,149 +11,121 @@ const machineglassText = document.getElementById("machine-glass-label");
 const machinemanutText = document.getElementById("machine-manut-label");
 const machinemanutentoreText = document.getElementById("machine-manutentore-label");
 
-
-//Accedo al file xml e prendo tutti i distributori con variabili interne
-let urlXML = "../XML/machine_status.xml"
-let macchineMap = {};
-let inputText = 0
-let errors = {};
-let messages = {}
-fetch(urlXML)
-    .then(res => res.text())
-    .then(xmlStr => {
-        const xml = new DOMParser().parseFromString(xmlStr, "text/xml");
-
-        const distributori = xml.getElementsByTagName("Distributore");
-        for (let d of distributori) {
-            const id = d.getElementsByTagName("ID")[0].textContent;
-            macchineMap[id] = d; // salva il nodo con chiave ID
-        }
-    });
-
 const connectBtn = document.getElementById('connect-btn');
+const inputField = document.getElementById("machine-id");
 
+// URL Base del backend (Porta 8081 corretta)
+const API_URL = "http://localhost:8081/api/distributore/";
+
+// --- LOGICA CONNESSIONE ---
 connectBtn.addEventListener('click', () => {
-    inputText = document.getElementById("machine-id").value;
-    if(inputText in macchineMap){
-        console.log("Trovato:", inputText);
-        document.getElementById('machine-status').classList.remove('hidden');
-        document.body.style.height = "100%";
-        loadData();
+    let id = inputField.value.trim();
+
+    if(id) {
+        // Chiama il server Java
+        fetch(API_URL + id)
+            .then(response => {
+                if(response.ok) return response.json();
+                throw new Error("Distributore non trovato");
+            })
+            .then(data => {
+                console.log("Dati ricevuti:", data);
+
+                // Mostra il pannello
+                document.getElementById('machine-status').classList.remove('hidden');
+                document.body.style.height = "100%";
+
+                // Popola i dati a video
+                popolaDati(data);
+            })
+            .catch(error => {
+                console.error(error);
+                alert("Errore: " + error.message + "\nControlla che l'ID sia corretto (es. 1012)");
+            });
     } else {
-        console.log("Non trovato:", inputText);
-        alert("Il seguente ID: " + inputText + " non è presente nel sistema!\nAccertati di averlo inserito correttamente!")
+        alert("Inserisci un ID valido.");
     }
 });
 
-function loadData(){
-    console.log(macchineMap[inputText]);
-    const id = macchineMap[inputText].getElementsByTagName("ID")[0].textContent;
-    machineidText.textContent = id;
+function popolaDati(dati) {
+    // 1. Dati Generali
+    machineidText.textContent = dati.id;
+    machinetypeText.textContent = dati.modello;
+    machinesiteText.textContent = dati.posizione;
 
-    const modello = macchineMap[inputText].getElementsByTagName("Modello")[0].textContent;
-    machinetypeText.textContent = modello;
-
-    const posizione = macchineMap[inputText].getElementsByTagName("Posizione")[0].textContent;
-    machinesiteText.textContent = posizione;
-
-    const stato = macchineMap[inputText].getElementsByTagName("Stato")[0].textContent;
-    if(stato == "Online"){
-        machinestateText.textContent = stato + "🟢"
-    }else{
-        machinestateText.textContent = stato + "🔴"
+    if(document.getElementById("machine-manutentore-label")) {
+        document.getElementById("machine-manutentore-label").textContent = dati.nomeManutentore || "Nessuno";
     }
 
-    const temp = macchineMap[inputText].getElementsByTagName("Temperatura")[0].textContent
-    machinetempText.textContent = temp + "°C";
+    if(dati.stato === "Online"){
+        machinestateText.textContent = "Online 🟢";
+    } else {
+        machinestateText.textContent = "Offline 🔴";
+    }
 
-    const pressione = macchineMap[inputText].getElementsByTagName("Pressione")[0].textContent;
-    machinebarText.textContent = pressione + " bar";
+    // 2. Parametri Tecnici
+    if (dati.parametriTecnici) {
+        machinetempText.textContent = dati.parametriTecnici.temperatura + "°C";
+        machinebarText.textContent = dati.parametriTecnici.pressione + " bar";
+        machinewaterText.textContent = dati.parametriTecnici.acquaQty + " L";
+        machinesugarText.textContent = dati.parametriTecnici.zuccheroQty + " g";
+        machineglassText.textContent = dati.parametriTecnici.bicchieriNum;
+    }
 
-    const acqua = macchineMap[inputText].getElementsByTagName("AcquaQty")[0].textContent;
-    machinewaterText.textContent = acqua + " L"
+    machinemanutText.textContent = dati.ultimaManutenzione || "Mai";
 
-    const zucchero = macchineMap[inputText].getElementsByTagName("ZuccheroQty")[0].textContent;
-    machinesugarText.textContent = zucchero + " g"
+    // 3. Gestione Scorte (Bevande)
+    // Mappa per collegare il nome DB all'ID della progress bar HTML
+    const mapBevande = {
+        "caffe": "caffe",
+        "cappuccino": "cappuccino",
+        "caffelatte": "caffelatte",
+        "cioccolata": "cioccolata",
+        "the": "the"
+    };
 
-    const bicchieri = macchineMap[inputText].getElementsByTagName("BicchieriNum")[0].textContent;
-    machineglassText.textContent = bicchieri;
+    if (dati.scorte) {
+        dati.scorte.forEach(scorta => {
+            // Normalizziamo i nomi (toglie accenti e minuscolo)
+            let nomeDb = scorta.bevanda.nome.toLowerCase().replace("è", "e").replace("thè", "the");
 
-    const manut = macchineMap[inputText].getElementsByTagName("UltimaManutenzione")[0].textContent;
-    machinemanutText.textContent = manut;
+            let elementIdBar = nomeDb + "pblvl";
+            let elementIdText = nomeDb + "-level-percent";
 
-    const addetto = macchineMap[inputText].getElementsByTagName("AddettoResponsabile")[0].textContent;
-    machinemanutentoreText.textContent = addetto;
+            let bar = document.getElementById(elementIdBar);
+            let text = document.getElementById(elementIdText);
 
-    const caffe = macchineMap[inputText].getElementsByTagName("Bevanda")[0];
-    //console.log(caffe);
-    const caffelvl = caffe.getElementsByTagName("Quantity")[0].textContent;
-    const maxcaffelvl = caffe.getElementsByTagName("MaxQuantity")[0].textContent;
-    //console.log(caffelvl)
-    //console.log(maxcaffelvl)
-    //quantita percentuale
-    const percentcaffe = (caffelvl * 100)/maxcaffelvl;
-    console.log(percentcaffe)
-    document.getElementById("caffe-level-percent").textContent = percentcaffe + "%"
-    document.getElementById("caffepblvl").style.width = percentcaffe + "%";
+            if (bar && text) {
+                let qty = scorta.quantita;
+                let max = scorta.maxQuantita;
+                let percent = Math.round((qty * 100) / max);
 
+                text.textContent = percent + "%";
+                bar.style.width = percent + "%";
 
-    const cappuccino = macchineMap[inputText].getElementsByTagName("Bevanda")[1];
-    const cappuccinolvl = cappuccino.getElementsByTagName("Quantity")[0].textContent;
-    const maxcappuccinolvl = cappuccino.getElementsByTagName("MaxQuantity")[0].textContent;
-    const percentcappuccino = (cappuccinolvl * 100)/maxcappuccinolvl;
-    document.getElementById("cappuccino-level-percent").textContent = percentcappuccino + "%"
-    document.getElementById("cappuccinopblvl").style.width = percentcappuccino + "%";
-
-
-    const caffelatte = macchineMap[inputText].getElementsByTagName("Bevanda")[2];
-    const caffelattelvl = caffelatte.getElementsByTagName("Quantity")[0].textContent;
-    const maxcaffelattelvl = caffelatte.getElementsByTagName("MaxQuantity")[0].textContent;
-    const percentcaffelatte = (caffelattelvl * 100)/maxcaffelattelvl;
-    document.getElementById("caffelatte-level-percent").textContent = percentcaffelatte + "%"
-    document.getElementById("caffelattepblvl").style.width = percentcaffelatte + "%";
-
-    const cioccolata = macchineMap[inputText].getElementsByTagName("Bevanda")[3];
-    const cioccolatalvl = cioccolata.getElementsByTagName("Quantity")[0].textContent;
-    const maxcioccolatalvl = cioccolata.getElementsByTagName("MaxQuantity")[0].textContent;
-    const percentcioccolata = (cioccolatalvl * 100)/maxcioccolatalvl;
-    document.getElementById("cioccolata-level-percent").textContent = percentcioccolata + "%"
-    document.getElementById("cioccolatapblvl").style.width = percentcioccolata + "%";
-
-    const the = macchineMap[inputText].getElementsByTagName("Bevanda")[4];
-    const thelvl = the.getElementsByTagName("Quantity")[0].textContent;
-    const maxthelvl = the.getElementsByTagName("MaxQuantity")[0].textContent;
-    const percentthe = (thelvl * 100)/maxthelvl;
-    document.getElementById("the-level-percent").textContent = percentthe + "%"
-    document.getElementById("thepblvl").style.width = percentthe + "%";
-
-    const elementi = document.querySelectorAll(".progress-bar");
-    console.log(elementi)
-    elementi.forEach(elem => {
-        const width = parseInt(elem.style.width);
-        if (width <= 33) {
-            elem.style.backgroundColor = "red";
-        } else {
-            if (width > 33 && width <= 66) {
-                elem.style.backgroundColor = "yellow";
-            } else {
-                if (width > 66) {
-                    elem.style.backgroundColor = "green";
-                } else {
-
-                }
+                // Colori dinamici
+                bar.style.backgroundColor = "green";
+                if (percent < 66) bar.style.backgroundColor = "yellow";
+                if (percent < 33) bar.style.backgroundColor = "red";
             }
-        }
-    });
-    const macchina = macchineMap[inputText];
-    errors = macchina.getElementsByTagName("Errors")[0];
-    messages = errors.getElementsByTagName("Message");
-    console.log(messages.textContent)
+        });
+    }
+
+    // 4. Guasti / Errori
     const ul = document.getElementById("error-list");
-    ul.innerHTML = "<li></li>";
-    Array.from(messages).forEach(msg => {
+    ul.innerHTML = ""; // Pulisci lista vecchia
+
+    if (dati.guasti && dati.guasti.length > 0) {
+        dati.guasti.forEach(guasto => {
+            const li = document.createElement("li");
+            li.textContent = "⚠️ " + guasto.messaggio;
+            li.style.color = "#ff8a80"; // Rosso chiaro
+            ul.appendChild(li);
+        });
+    } else {
         const li = document.createElement("li");
-        li.textContent = "⚠️ " + msg.textContent + " ⚠️"; // inserisce il testo del messaggio
+        li.textContent = "✅ Nessun guasto rilevato";
+        li.style.color = "lightgreen";
         ul.appendChild(li);
-    });
-    ul.innerHTML += "<li></li>";
+    }
 }

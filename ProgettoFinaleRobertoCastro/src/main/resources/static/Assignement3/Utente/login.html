@@ -2,41 +2,50 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>Login Coffee CApp</title>
+    <title>Login</title>
     <link rel="stylesheet" href="log_reg_style.css">
 </head>
 <body>
-    <div class="coffee-machine">
-        <div id="login-form">
-            <form action="utente.html" method="post">
-                <h1>☕ Coffee CApp ☕</h1>
-                <h2>-  Accedi  -</h2>
-                <input
-                        type="text"
-                        id="login-username"
-                        name="username"
-                        placeholder="Nome Utente"
-                        required
-                        minlength="3"
-                        maxlength="20"
-                        pattern="[a-zA-Z0-9]{3,20}"
-                        title="L'username deve essere tra 3 e 20 caratteri e contenere solo lettere, numeri."
-                >
-                <input
-                        type="password"
-                        id="login-password"
-                        name="password"
-                        placeholder="Password"
-                        required
-                        minlength="6"
-                        maxlength="15"
-                        pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,20}"
-                        title="La password deve contenere minimo 6 e massimo 20 caratteri, una lettera maiuscola, minuscola e un numero."
-                >
-                <button type="submit">Login</button>
-                <p>Non hai un account? <a href="register.html" id="show-register"> Registrati</a></p>
-            </form>
-        </div>
-    </div>
+<div class="login-container">
+    <h2>Accedi</h2>
+    <form id="login-form">
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="submit">Entra</button>
+    </form>
+    <p>Non hai un account? <a href="register.html">Registrati</a></p>
+</div>
+
+<script>
+    document.getElementById("login-form").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const credenziali = {
+            username: document.getElementById("username").value,
+            password: document.getElementById("password").value
+        };
+
+        fetch("http://localhost:8081/api/utente/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(credenziali)
+        })
+            .then(async response => {
+                if (response.ok) {
+                    const utente = await response.json();
+
+                    // SALVO L'UTENTE NEL BROWSER!
+                    // Questo è fondamentale per la pagina utente.html
+                    localStorage.setItem("username_loggato", utente.username);
+
+                    alert("Benvenuto " + utente.nome + "!");
+                    window.location.href = "utente.html"; // Vai alla dashboard
+                } else {
+                    alert("Username o Password errati.");
+                }
+            })
+            .catch(err => alert("Errore di connessione: " + err));
+    });
+</script>
 </body>
 </html>

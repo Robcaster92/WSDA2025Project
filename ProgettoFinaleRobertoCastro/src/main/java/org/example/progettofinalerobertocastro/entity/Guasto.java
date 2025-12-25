@@ -2,6 +2,7 @@ package org.example.progettofinalerobertocastro.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "guasto")
@@ -12,6 +13,7 @@ public class Guasto {
 
     @ManyToOne
     @JoinColumn(name = "id_distributore")
+    @JsonIgnore
     private Distributore distributore;
 
     private String messaggio;
