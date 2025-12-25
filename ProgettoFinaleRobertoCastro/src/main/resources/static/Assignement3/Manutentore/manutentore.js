@@ -13,15 +13,11 @@ window.onload = function() {
     // --- FUNZIONE PER GESTIRE IL LAYOUT DINAMICO ---
     function setBodyStyle(isDashboardOpen) {
         if (isDashboardOpen) {
-            // QUANDO APRI LA DASHBOARD (Contenuto lungo)
-            // Rimuoviamo il vincolo 100vh e allineiamo in alto per permettere lo scroll
             document.body.style.height = "auto";
-            document.body.style.minHeight = "100vh"; // Assicura che copra almeno tutto lo schermo
-            document.body.style.alignItems = "flex-start"; // Allinea in alto invece che al centro
-            document.body.style.padding = "40px 0"; // Aggiunge spazio sopra e sotto
+            document.body.style.minHeight = "100vh";
+            document.body.style.alignItems = "flex-start";
+            document.body.style.padding = "40px 0";
         } else {
-            // QUANDO CHIUDI LA DASHBOARD (Contenuto corto)
-            // Torniamo al centro perfetto
             document.body.style.height = "100vh";
             document.body.style.minHeight = "unset";
             document.body.style.alignItems = "center";
@@ -33,10 +29,7 @@ window.onload = function() {
     const loggedUser = localStorage.getItem("username_loggato");
 
     if (loggedUser) {
-        // Mostra subito username locale intanto che carica quello vero
         if(welcomeLabel) welcomeLabel.textContent = "Ciao, " + loggedUser;
-
-        // Chiama il server per il nome completo
         fetch("http://localhost:8081/api/utente/info?username=" + loggedUser)
             .then(res => res.json())
             .then(data => {
@@ -46,7 +39,6 @@ window.onload = function() {
             })
             .catch(err => console.log("Impossibile recuperare nome completo:", err));
     } else {
-        // Se non c'è login, manda alla pagina di login
         window.location.href = "../login.html";
     }
 
@@ -59,7 +51,6 @@ window.onload = function() {
                 return;
             }
 
-            // Chiamata API
             fetch("http://localhost:8081/api/distributore/" + id)
                 .then(response => {
                     if (response.ok) return response.json();
@@ -67,18 +58,10 @@ window.onload = function() {
                 })
                 .then(data => {
                     console.log("Dati Macchina:", data);
-
-                    // Nascondi pannello connessione
                     connectionPanel.style.display = "none";
-
-                    // Mostra dashboard
                     statusPanel.classList.remove('hidden');
                     statusPanel.style.display = "block";
-
-                    // *** FIX LAYOUT: Allinea in alto per permettere lo scroll ***
                     setBodyStyle(true);
-
-                    // Popola i campi
                     popolaDati(data);
                 })
                 .catch(error => {
@@ -87,24 +70,17 @@ window.onload = function() {
         };
     }
 
-    // --- 3. TASTO DISCONNETTI DA MACCHINA ---
+    // --- 3. TASTO DISCONNETTI ---
     if (disconnectBtn) {
         disconnectBtn.onclick = function() {
-            // Nascondi dashboard
             statusPanel.style.display = "none";
-
-            // Mostra pannello connessione
             connectionPanel.style.display = "block";
-
-            // *** FIX LAYOUT: Torna al centro ***
             setBodyStyle(false);
-
-            // Pulisci input
             inputField.value = "";
         };
     }
 
-    // --- 4. TASTO ESCI DALL'ACCOUNT ---
+    // --- 4. TASTO LOGOUT ---
     if (globalLogoutBtn) {
         globalLogoutBtn.onclick = function() {
             localStorage.removeItem("username_loggato");
@@ -116,7 +92,6 @@ window.onload = function() {
 
 // --- FUNZIONE PER RIEMPIRE I DATI A VIDEO ---
 function popolaDati(dati) {
-    // Helper per scrivere nei campi se esistono
     function scrivi(id, testo) {
         const el = document.getElementById(id);
         if (el) el.textContent = testo;
@@ -127,11 +102,9 @@ function popolaDati(dati) {
     scrivi("machine-site-label", dati.posizione);
     scrivi("machine-manutentore-label", dati.nomeManutentore || "Nessuno");
 
-    // Stato Online/Offline
     const statoEl = document.getElementById("machine-state-label");
     if(statoEl) statoEl.textContent = (dati.stato === "Online") ? "Online 🟢" : "Offline 🔴";
 
-    // Parametri Tecnici
     if (dati.parametriTecnici) {
         scrivi("machine-temp-label", dati.parametriTecnici.temperatura + "°C");
         scrivi("machine-bar-label", dati.parametriTecnici.pressione + " bar");
@@ -142,13 +115,14 @@ function popolaDati(dati) {
 
     scrivi("machine-manut-label", dati.ultimaManutenzione || "Mai");
 
-    // Scorte
+    // --- SCORTE (CORREZIONE QUI SOTTO) ---
     if (dati.scorte) {
         dati.scorte.forEach(scorta => {
-            // Pulisci il nome (es. "Caffè" -> "caffe")
             let nome = scorta.bevanda.nome.toLowerCase();
-            if(nome.includes("caff")) nome = "caffe";
-            else if(nome.includes("latte")) nome = "caffelatte";
+
+            // FIX: Controlliamo "latte" PRIMA di "caff" per intercettare Caffellatte correttamente
+            if(nome.includes("latte")) nome = "caffellatte";
+            else if(nome.includes("caff")) nome = "caffe";
             else if(nome.includes("appucc")) nome = "cappuccino";
             else if(nome.includes("iocco")) nome = "cioccolata";
             else if(nome.includes("th") || nome.includes("tè")) nome = "the";
@@ -164,7 +138,6 @@ function popolaDati(dati) {
                 txt.textContent = perc + "%";
                 bar.style.width = perc + "%";
 
-                // Colori
                 bar.style.backgroundColor = "green";
                 if (perc < 50) bar.style.backgroundColor = "orange";
                 if (perc < 20) bar.style.backgroundColor = "red";
@@ -172,7 +145,6 @@ function popolaDati(dati) {
         });
     }
 
-    // Lista Guasti
     const ul = document.getElementById("error-list");
     if (ul) {
         ul.innerHTML = "";
